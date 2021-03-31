@@ -28,7 +28,7 @@ iframe{
 .banner{
     display: flex;
     justify-content: space-between;
-    padding:2rem;
+    padding:1rem;
     width: 98%;
 }
 .wave{
@@ -83,6 +83,16 @@ iframe{
     grid-auto-flow: row;
     gap:10px;
     
+}
+
+
+.settings{
+    position: absolute;
+    top:-400px;
+    width: 100%;
+    z-index: 1;
+    background-color: #0087e2;
+    transition: 700ms cubic-bezier(.67,-0.08,.39,1.15);
 }
 
 .placeholder{
@@ -146,6 +156,11 @@ iframe{
     transition: 400ms cubic-bezier(.57,-0.43,.36,1.4);
 }
 
+.input-group{
+    background-color: #305772;
+    padding:5px;
+    width: auto;
+}
 
 /* Media Query */
 @media(max-width: 1670px){

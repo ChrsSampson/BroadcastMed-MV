@@ -10,9 +10,18 @@
 <body>
     
     <section class="settings" id="settings">
-        <h2>Settings</h2>
-        <input id="config-input" type="file" accept="application/json">
-        <button id="import-btn">Enter</button>
+        <div class="setting-banner">
+            <img class="" id="setting-collapse" src="img/delete.svg">
+            <h2>Settings</h2>
+        </div>
+        <article class="setting-container">
+            <div class="input-group">
+                <h4>Import JSON File</h4>
+                <h5>Only use this if you know what your doing</h5>
+                <input id="config-input" type="file" accept="application/json">
+                <button id="import-btn">Enter</button>
+            </div>
+        </article>
     </section>
 
     <header class="banner-container">

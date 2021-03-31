@@ -23,7 +23,9 @@ const collapseBtn = document.getElementById("collapse-btn")
 const sidebar = document.getElementById('sidebar');
 const desktopEncodersCont = document.getElementById("desktopEncoder-Container");
 const importBtn = document.getElementById("import-btn")
-const settingBtn = document.getElementById("import-btn")
+const settingBtn = document.getElementById("setting-btn")
+const settingPanel = document.getElementById('settings')
+const settingCollapse = document.getElementById('setting-collapse')
 const config = document.getElementById("config-input")
 
 
@@ -167,6 +169,14 @@ menuBtn.onclick = () => {
     sidebar.style.left = '0'
 }
 
+// button for setting menu
+settingBtn.onclick = () => {
+    settingPanel.style.top = "0px"
+}
+
+settingCollapse.onclick = () => {
+    settingPanel.style.top = "-400px"
+}
 
 // Sidebar button click events
 sidebar.onclick = (e) => {
