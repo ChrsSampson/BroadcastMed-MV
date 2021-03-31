@@ -36,12 +36,10 @@ screenSize = window.screen.width
 CheckFirstRun = () => {
     if(localStorage.getItem('laptops') == null || localStorage.getItem('desktops') == null){
         console.info("First Time Startup Detected")
-        console.info('Storage is empty or corrupt')
-        localStorage.clear();
-        FetchLinks("./link.json")
-        // Display data in storage in the side bar
-        DisplayData('laptops', laptopEncoderCont)
-        DisplayData('desktops', desktopEncodersCont)
+        console.info('Storage is empty')
+        FetchLinks("link.json")
+        // Work around to a fetch bug not showing any data, this works fine for now
+        location.reload()
     }
     else{
         console.log('Welcome Back')
@@ -50,7 +48,6 @@ CheckFirstRun = () => {
         DisplayData('desktops', desktopEncodersCont)
     }
 }
-
 
 // function to import links from local file
 const FetchLinks = (source) => {
@@ -66,11 +63,12 @@ const FetchLinks = (source) => {
 
 // Write Fetched Data to Local Storage
 WriteData = (data) => {
+    console.log("Before Write:", localStorage)
     let laptopArr = data.laptop_encoders
     let desktopArr = data.desktop_encoders
         
-    localStorage.setItem(`laptops`, JSON.stringify(laptopArr));
-    localStorage.setItem(`desktops`, JSON.stringify(desktopArr));
+    localStorage.setItem('laptops', JSON.stringify(laptopArr));
+    localStorage.setItem('desktops', JSON.stringify(desktopArr));
     
     console.info("Writing Storage From JSON...")
     console.log(localStorage)
@@ -97,7 +95,7 @@ AddWindow = (input) => {
     DisplayWindows(url, gIndex)
 }
 
-// Display Windows
+// Display Frame Windows
 DisplayWindows = (url, index) => {
     
 
