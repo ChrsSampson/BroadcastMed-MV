@@ -1,8 +1,6 @@
 // TODO
-// Complete Settings Menu
-// []Settings Option: Change Layout
-// []Design: Exe/favicon logo
-// [] at some point fix the many sin committed to get to this point
+// []Settings Option: Change Layout buttons
+// [] at some point fix the many sins committed to get to this point
 
 
 
@@ -21,6 +19,7 @@ const settingBtn = document.getElementById("setting-btn")
 const settingPanel = document.getElementById('settings')
 const settingCollapse = document.getElementById('setting-collapse')
 const config = document.getElementById("config-input")
+const successMsg = document.getElementById("success-msg")
 
 
 // Big Girthy Global Variables
@@ -33,9 +32,12 @@ CheckFirstRun = () => {
     if(localStorage.getItem('laptops') == null || localStorage.getItem('desktops') == null){
         console.info("First Time Startup Detected")
         console.info('Storage is empty')
-        FetchLinks("link.json")
+        FetchLinks("./link.json")
         // Work around to a fetch bug not showing any data, this works fine for now
-        location.reload()
+        setTimeout(()=>{
+            DisplayData('laptops', laptopEncoderCont)
+            DisplayData('desktops', desktopEncodersCont)
+        }, 3*1000)
     }
     else{
         console.log('Welcome Back')
@@ -111,7 +113,17 @@ DisplayWindows = (url, index) => {
 
 // create a place holder when area is empty
 Placeholder = (element) => {
-    
+    if(element.childElementCount == 0){
+        element.insertAdjacentHTML('afterbegin', `
+        <section class="placeholder" id="placeholder">
+        <img src="./img/sad.svg">
+        <h3>There is nothing here</h3>
+        </section>
+        `)
+    }
+    else{
+        element.removeChild(document.getElementById('placeholder'))
+    }
 }
 
 // Import New JSON config File
@@ -178,15 +190,28 @@ sidebar.onclick = (e) => {
     else if(e.target.id == "add-btn"){
         AddWindow(urlInput.value)
     }
-   
+    else if(e.target.id = "clear-btn"){
+        windowCont.innerHTML = ''
+    }
+
 }
 
 // Import new JSON
 importBtn.onclick = () => {
-    if(config.files){
+    if(config.files[0] != undefined){
         // clear storage so no duplicates or overwrites
         localStorage.clear();
         ImportConfig(config.files[0])
+        // show success message for a couple seconds
+        successMsg.style.display = "block"
+        setTimeout(() => {
+            successMsg.style.display = "none"
+            config.files = "";
+            }, 5*1000)
+    }
+    // show error if no selection is made
+    else{
+        alert("cant be empty")
     }
    
 }

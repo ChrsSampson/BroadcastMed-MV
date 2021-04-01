@@ -17,9 +17,11 @@
         <article class="setting-container">
             <div class="input-group">
                 <h4>Import JSON File</h4>
-                <h5>Only use this if you know what your doing</h5>
+                <h3 class="msg" id="success-msg">File Imported</h3>
                 <input id="config-input" type="file" accept="application/json">
+                
                 <button id="import-btn">Enter</button>
+                
             </div>
         </article>
     </section>
@@ -55,11 +57,15 @@
 
     <section class="sidebar" id="sidebar" attr="sidebar">
         <img class="collapse-btn" id="collapse-btn" src="img/delete.svg">
-        <h3>Manual Link</h3>
-        <div class="manual-link">
-            <input type="text" id="input-address" placeholder="Enter Ping Plotter URL">
-            <img id="add-btn" class="submit-btn" src="img/PlusWindow.svg">
-        </div>
+        
+        <article>
+            <a id="clear-all" class="clear-btn">Clear All Windows</a>
+            <h3>Manual Link</h3>
+            <div class="manual-link">
+                <input type="text" id="input-address" placeholder="Enter Ping Plotter URL">
+                <img id="add-btn" class="submit-btn" src="img/PlusWindow.svg">
+            </div>
+        </article>
         <div>
             <h3>Laptop Encoders</h3>
             <article class="encoder-container" id="laptopEncoderBtn-Container">
