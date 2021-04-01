@@ -15,6 +15,7 @@ body{
 
 iframe{
     border-radius: 10px;
+    width: 100%;
 }
 
 
@@ -40,7 +41,7 @@ iframe{
 .window-container{
     width: 98%;
     display: grid;
-    grid-template-columns:auto auto;
+    grid-template-columns:50% 50%;
     grid-template-rows: auto auto;
     grid-auto-flow: row;
     padding:0px .5rem;
@@ -76,6 +77,10 @@ iframe{
     transition: 700ms cubic-bezier(.67,-0.08,.39,1.15);
     border-radius: 0px 0px 10px 0px;
 }
+.manual-link{
+    display: flex;
+    align-items: center;
+}
 .encoder-container{
     display: grid;
     grid-template-columns: 28% 28% 28%;
@@ -84,8 +89,6 @@ iframe{
     gap:10px;
     
 }
-
-
 .settings{
     position: absolute;
     top:-400px;
@@ -94,7 +97,10 @@ iframe{
     background-color: #0087e2;
     transition: 700ms cubic-bezier(.67,-0.08,.39,1.15);
 }
-
+.settings h2{
+    text-align: center;
+    margin:0em;
+}
 .placeholder{
     display: inline-block;
     text-align: center;
@@ -142,17 +148,24 @@ iframe{
     width: 50px;
     transition: 400ms cubic-bezier(.57,-0.43,.36,1.4);
 }
-.menu-btn:hover{
-    transform: scale(1.5);
-    transition: 400ms cubic-bezier(.57,-0.43,.36,1.4);
+.submit-btn{
+    margin:.25em;
+}
+.submit-btn:hover{
+    background: coral;
 }
 .collapse-btn{
     position: relative;
     left: -45%;
     transition: 400ms cubic-bezier(.57,-0.43,.36,1.4);
 }
-.collapse-btn:hover{
+.setting-collapse:hover, .menu-btn:hover, .collapse-btn:hover{
+    cursor: pointer;
     transform: scale(1.5);
+    transition: 400ms cubic-bezier(.57,-0.43,.36,1.4);
+}
+.setting-collapse{
+    margin:1em;
     transition: 400ms cubic-bezier(.57,-0.43,.36,1.4);
 }
 

@@ -1,18 +1,12 @@
 // TODO
 // Complete Settings Menu
-// [X]Important: Fetched JSON data is Stored and accessed from local storage so configs only have to be imported once
-// [X]Settings Option: Import JSON File
 // []Settings Option: Change Layout
-// []Design: Setting icon not aligned
 // []Design: Exe/favicon logo
-// []Bug : Check for Null entries in text boxes
-// []Bug: Watch for non-pingplotter domains
-// []Bug: Layout on on small winodows sucks, can fix with like one media query
-// []Design: Sidebar size and layout in full screen is kinda small
-// []Bug: Layout change above is going to require sinning all over the sidebar collapse event the placeholder will also need some fucking with
+// [] at some point fix the many sin committed to get to this point
 
 
-// Selectors
+
+// Selectors (there are unused things in here...probobly)
 const laptopEncoderCont = document.getElementById('laptopEncoderBtn-Container');
 const urlInput = document.getElementById("input-address");
 const windowCont = document.getElementById("window-container")
@@ -31,7 +25,7 @@ const config = document.getElementById("config-input")
 
 // Big Girthy Global Variables
 let gIndex = 0;
-screenSize = window.screen.width
+
 
 
 // Check to see if local storage is empty
@@ -146,12 +140,6 @@ window.onload = () => {
     CheckFirstRun()
     // check if main container is empty and show a placeholder 
     Placeholder(windowCont)
-}
-
-// Refresh Screen size variable (this is a really bad thing for performance)
-// this is for JS based media queries.....maybe if I use it 
-window.onresize = () => {
-    screenSize = window.screen.width;
 }
 
 // Delete window event listener
