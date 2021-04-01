@@ -32,6 +32,10 @@ iframe{
     padding:1rem;
     width: 98%;
 }
+.logo{
+    height:8em;
+    width:8em;
+}
 .wave{
     width: 100%;
     position: relative;
