@@ -5,31 +5,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MultiViewer</title>
-    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     
+    <div id="overlay" class="overlay">
+        <div class="loading-content">
+        <h1>Loading...</h1>
+        <img class="loading" id="loading" src="/img/loading.svg">
+        </div>
+    </div>
+
     <section class="settings" id="settings">
         <div class="setting-banner">
-            <img class="setting-collapse" id="setting-collapse" src="img/delete.svg">
-            <h2>Settings</h2>
-        </div>
-        <article class="setting-container">
-            <div class="input-group">
-                <h4>Import JSON File</h4>
-                <h3 class="msg" id="success-msg">File Imported</h3>
-                <input id="config-input" type="file" accept="application/json">
-                
-                <button id="import-btn">Enter</button>
-                
+        <button class="clear-btn" id="fireSync">Sync with Database</button>
+                <div class="msg" id="status-message">
+                <h4>Message: This is A Message</h4>
             </div>
-        </article>
+        </div>
     </section>
 
     <header class="banner-container">
 
         <article class="banner">
-            <img class="menu-btn" id="menu-btn" src="img/menu.svg">
+            <label for="menu-check">
+                <input type="checkbox" id="menu-check" class="checkbox">
+                <img class="menu-btn" id="menu-btn" src="img/menu.svg">
+            </label>
             <img class="logo" src="./img/logo.png">
             <img class="menu-btn" id="setting-btn" src="img/gear.svg">
         </article>
@@ -39,7 +41,7 @@
               preserveAspectRatio="none"
               viewBox="0 0 1200 120"
               xmlns="http://www.w3.org/2000/svg"
-              style="fill: #ff6347; width: 100%; height: 122px; transform: rotate(180deg);"
+              style="fill: #ff4500; width: 100%; height: 122px; transform: rotate(180deg);"
             >
               <path
               d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z"
@@ -56,14 +58,12 @@
     </header>
 
     <section class="sidebar" id="sidebar" attr="sidebar">
-        <img class="collapse-btn" id="collapse-btn" src="img/delete.svg">
-        
         <article>
             <a id="clear-all" class="clear-btn">Clear All Windows</a>
             <h3>Manual Link</h3>
             <div class="manual-link">
-                <input type="text" id="input-address" placeholder="Enter Ping Plotter URL">
-                <img id="add-btn" class="submit-btn" src="img/PlusWindow.svg">
+                <input type="text" class="manual-box" id="input-address" placeholder="Enter Ping Plotter URL">
+                <img id="add-btn" class="manual-btn" src="img/PlusWindow.svg">
             </div>
         </article>
         <div>
@@ -85,7 +85,10 @@
         <!-- <iframe src="https://pingplotter.cloud/LiveShare/mtykd5w4n6drbrf5idrymq4x6o/gqyhzek8" frameborder="0" width="800" height="600"></iframe> -->
   
     </section>
-
+<!-- FirBase CDN -->
+<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-firestore.js"></script>
+<script src="client.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

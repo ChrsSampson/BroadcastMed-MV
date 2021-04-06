@@ -1,6 +1,9 @@
 // TODO
-// []Settings Option: Change Layout buttons
-// [] at some point fix the many sins committed to get to this point
+// [X]Impement Firebase Sync
+// [] Add loading overlay while firebase query runs
+// [X] Settings: Add Sync Button
+// []Settings Option: Add Change Layout buttons
+// [X]Fix CSS
 
 
 
@@ -13,63 +16,24 @@ const encoderList = document.getElementById("select-machine")
 const menuBtn = document.getElementById("menu-btn")
 const collapseBtn = document.getElementById("collapse-btn")
 const sidebar = document.getElementById('sidebar');
-const desktopEncodersCont = document.getElementById("desktopEncoder-Container");
+const desktopEncoderCont = document.getElementById("desktopEncoder-Container");
 const importBtn = document.getElementById("import-btn")
 const settingBtn = document.getElementById("setting-btn")
 const settingPanel = document.getElementById('settings')
-const settingCollapse = document.getElementById('setting-collapse')
-const config = document.getElementById("config-input")
-const successMsg = document.getElementById("success-msg")
-
-
-// Big Girthy Global Variables
-let gIndex = 0;
+const msg = document.getElementById("status-message")
 
 
 
 // Check to see if local storage is empty
 CheckFirstRun = () => {
-    if(localStorage.getItem('laptops') == null || localStorage.getItem('desktops') == null){
-        console.info("First Time Startup Detected")
-        console.info('Storage is empty')
-        FetchLinks("./link.json")
-        // Work around to a fetch bug not showing any data, this works fine for now
-        setTimeout(()=>{
-            DisplayData('laptops', laptopEncoderCont)
-            DisplayData('desktops', desktopEncodersCont)
-        }, 3*1000)
+    if(localStorage.getItem('laptopEncoders') == null || localStorage.getItem('desktopEncoders') == null){
+        LoadData();
     }
     else{
-        console.log('Welcome Back')
-        // Display data in storage in the side bar
-        DisplayData('laptops', laptopEncoderCont)
-        DisplayData('desktops', desktopEncodersCont)
+        console.log("Welcome Back")
+        DisplayData('laptopEncoders', laptopEncoderCont)
+        DisplayData('desktopEncoders', desktopEncoderCont)
     }
-}
-
-// function to import links from local file
-const FetchLinks = (source) => {
-    fetch(source)
-      .then((res) => {
-        return res.json()
-    })
-    .then((data) => {
-        WriteData(data);
-        
-    })
-}
-
-// Write Fetched Data to Local Storage
-WriteData = (data) => {
-    console.log("Before Write:", localStorage)
-    let laptopArr = data.laptop_encoders
-    let desktopArr = data.desktop_encoders
-        
-    localStorage.setItem('laptops', JSON.stringify(laptopArr));
-    localStorage.setItem('desktops', JSON.stringify(desktopArr));
-    
-    console.info("Writing Storage From JSON...")
-    console.log(localStorage)
 }
 
 // Populate Drop down box from link
@@ -85,24 +49,12 @@ DisplayData = (type, container) => {
 }
 
 // Add iframe to area, Might add some local storage to thin in the future for local session persisance
-AddWindow = (input) => {
-    let url = input
-      
-    gIndex++
-        
-    DisplayWindows(url, gIndex)
-}
-
 // Display Frame Windows
-DisplayWindows = (url, index) => {
-    
-
+DisplayWindows = (url) => {
     let frameContent = `
-    <article class="frame" id="frame-container data-link="${index}">
-    <img id="del-btn" class="del-btn" src="./img/delete.svg">
+    <article class="frame-container" id="frame-container">
     <iframe src="${url}" frameborder="0" width="800" height="500"></iframe>
     </article>`
-
 
     windowCont.insertAdjacentHTML('afterbegin', frameContent);
 
@@ -120,31 +72,24 @@ Placeholder = (element) => {
         <h3>There is nothing here</h3>
         </section>
         `)
+
     }
     else{
         element.removeChild(document.getElementById('placeholder'))
     }
 }
 
-// Import New JSON config File
-ImportConfig = (source) => {
-    const fr = new FileReader();
-
-    fr.readAsText(source);
-      
-    fr.onload = () => {
-        console.log(fr.result)
-        // parse string as json to be plugged into DisplayData function
-        let conf = JSON.parse(fr.result)
-        console.info("Parsing new Config....")
-        WriteData(conf)
-        // clear the sidebar before loading new items
-        laptopEncoderCont.innerHTML = ''
-        desktopEncodersCont.innerHTML = ''
-        DisplayData('laptops', laptopEncoderCont)
-        DisplayData('desktops', desktopEncodersCont)
-    }
+LoadData = () => {
+    document.getElementById('overlay').style.display = "grid"
+    ReadData('laptopEncoders')
+    ReadData('desktopEncoders')
+    setTimeout(() => {
+            DisplayData('laptopEncoders', laptopEncoderCont)
+            DisplayData('desktopEncoders', desktopEncoderCont)
+            document.getElementById('overlay').style.display = "none"
+    }, 5.2*1000)
 }
+
 
 // --------------------Event handlers-----------------------------
 // Startup Functions
@@ -163,55 +108,56 @@ windowCont.onclick = (e) => {
     }
 }
 
-
 // menu button for sidebar
 menuBtn.onclick = () => {
-    sidebar.style.left = '0'
+    sidebar.classList.toggle('sidebar-expanded')
+    if(sidebar.classList.contains('sidebar-expanded')){
+        menuBtn.src = "/img/leftArrow.svg"
+    }
+    else{
+        menuBtn.src= "/img/menu.svg"
+    }
 }
 
 // button for setting menu
 settingBtn.onclick = () => {
-    settingPanel.style.top = "0px"
+    settingPanel.classList.toggle('setting-expanded')
+    if(settingPanel.classList.contains('setting-expanded')){
+        settingBtn.src = "/img/leftArrow.svg"
+        settingBtn.style.rotate = "90deg"
+    }
+    else{
+        settingBtn.src = "/img/gear.svg"
+    }
 }
 
-settingCollapse.onclick = () => {
-    settingPanel.style.top = "-400px"
+settingPanel.onclick = (e) => {
+    if(e.target.id == "fireSync"){
+        localStorage.clear()
+        laptopEncoderCont.innerHTML = ""
+        desktopEncoderCont.innerHTML = ""
+        LoadData();
+        
+    }
 }
 
 // Sidebar button click events
 sidebar.onclick = (e) => {
     if(e.target.id == "enc-btn"){
         link = e.target.dataset.link
-        AddWindow(link);
-    }
-    else if(e.target.id == "collapse-btn"){
-       sidebar.style.left = "-600px"
+        DisplayWindows(link);
     }
     else if(e.target.id == "add-btn"){
-        AddWindow(urlInput.value)
+        if(urlInput.value != ""){
+            DisplayWindows(urlInput.value)
+        }
+        else{
+            alert('Error:No Input Provided')
+        }
     }
     else if(e.target.id = "clear-btn"){
         windowCont.innerHTML = ''
+        Placeholder(windowCont);
     }
-
 }
 
-// Import new JSON
-importBtn.onclick = () => {
-    if(config.files[0] != undefined){
-        // clear storage so no duplicates or overwrites
-        localStorage.clear();
-        ImportConfig(config.files[0])
-        // show success message for a couple seconds
-        successMsg.style.display = "block"
-        setTimeout(() => {
-            successMsg.style.display = "none"
-            config.files = "";
-            }, 5*1000)
-    }
-    // show error if no selection is made
-    else{
-        alert("cant be empty")
-    }
-   
-}
