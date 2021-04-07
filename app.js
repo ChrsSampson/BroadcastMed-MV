@@ -53,6 +53,7 @@ DisplayData = (type, container) => {
 DisplayWindows = (url) => {
     let frameContent = `
     <article class="frame-container" id="frame-container">
+    <img id="remove-btn" class="remove-btn" src="./img/delete.svg">
     <iframe src="${url}" frameborder="0" width="800" height="500"></iframe>
     </article>`
 
@@ -72,10 +73,12 @@ Placeholder = (element) => {
         <h3>There is nothing here</h3>
         </section>
         `)
+       
 
     }
     else{
         element.removeChild(document.getElementById('placeholder'))
+        
     }
 }
 
@@ -101,7 +104,7 @@ window.onload = () => {
 
 // Delete window event listener
 windowCont.onclick = (e) => {
-    if(e.target.id == "del-btn"){
+    if(e.target.id == "remove-btn"){
        let cont = e.target.parentNode;
        windowCont.removeChild(cont);
        Placeholder(windowCont);

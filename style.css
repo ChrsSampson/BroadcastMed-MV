@@ -54,7 +54,7 @@ body{
 }
 .wave{
     position: relative;
-    top:.3em;
+    top:.4em;
 }
 /* sidebar */
 .sidebar{
@@ -97,6 +97,7 @@ body{
 .frame-container{
     display: flex;
     justify-content: space-around;
+    align-items: flex-start;
     width: auto;
     height: 400px;
     
@@ -111,6 +112,7 @@ iframe{
 }
 
 /* Components */
+
 /* Overlay */
 .overlay{
     display: none;
@@ -131,6 +133,24 @@ iframe{
     
 }
 
+/* Placeholder */
+.placeholder{
+    margin-top: 5em;
+    margin-right: 1em;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    text-align: center;
+    background-color: rgba(79, 90, 80, 0.404);
+    border:5px dashed rgba(200, 200, 200, 0.774);
+    border-radius: 10px;
+    font-size: 20px;
+}
+.placeholder img{
+    margin-top: 1em;
+    height:10em;
+}
+
 .manual-box{
     border: 3px solid var(--accent-hover);
 }
@@ -143,6 +163,7 @@ iframe{
 }
 
 /* Buttons */
+
 /* clear all button */
 .clear-btn{
     border:1px solid #fff;
@@ -181,6 +202,23 @@ iframe{
 .manual-btn:active{
     background-color: var(--background-color);
 }
+/* Remove button for frames */
+.remove-btn{
+    width: 1.5em;
+    margin:.25em;
+    display: none;
+    transition: 200ms cubic-bezier(.4,.13,.7,.99);
+}
+.remove-btn:hover{
+    transform: scale(1.3) rotate(180deg);
+    transition: 200ms cubic-bezier(.4,.13,.7,.99);
+}
+.frame-container:hover > .remove-btn{
+    display: block;
+}
+.frame-container:hover{
+    background-color: var(--accent-hover);
+}
   /* Utility */
   .sidebar-expanded{
     position: unset;
@@ -192,23 +230,8 @@ iframe{
       max-height:15em !important;
       transition: max-height 300ms cubic-bezier(.53,.01,.58,.99);
   }
-
-  .placeholder{
-      margin-top: 5em;
-      margin-right: 1em;
-      display: flex;
-      justify-content: space-around;
-      flex-direction: column;
-      text-align: center;
-      background-color: rgba(79, 90, 80, 0.404);
-      border:5px dashed rgba(200, 200, 200, 0.774);
-      border-radius: 10px;
-      font-size: 20px;
-  }
-  .placeholder img{
-      margin-top: 1em;
-      height:10em;
-  }
+  
+  
 
   /* media Query */
   @media(min-width:1000px){
