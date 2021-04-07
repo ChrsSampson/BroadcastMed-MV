@@ -22,7 +22,7 @@ const settingBtn = document.getElementById("setting-btn")
 const settingPanel = document.getElementById('settings')
 const msg = document.getElementById("status-message")
 const viewCont = document.getElementById('view-container')
-
+const searchbox = document.getElementById('input-search')
 
 // Check to see if local storage is empty
 CheckFirstRun = () => {
@@ -44,7 +44,7 @@ DisplayData = (type, container) => {
     Object.values(arr).forEach((e) => {
         let name = e.name
         let address = e.link
-        container.insertAdjacentHTML('beforeend', `<a class="btn" id="enc-btn" data-link=${address}>${name}</a>`)
+        container.insertAdjacentHTML('beforeend', `<a class="btn" id="enc-btn" data-name=${name} data-link=${address}>${name}</a>`)
     });
 }
 
@@ -154,8 +154,38 @@ sidebar.onclick = (e) => {
             alert('Error:No Input Provided')
         }
     }
-    else if(e.target.id = "clear-btn"){
+    else if(e.target.classList.contains("clear-btn")){
         windowCont.innerHTML = ''
         Placeholder(windowCont);
     }
+}
+
+searchbox.onkeyup = () => {
+    const searchTerm = searchbox.value.toLowerCase();
+    if(searchTerm != ""){
+        sidebar.style.justifyContent = "start"
+    }
+    else{
+        sidebar.style.justifyContent = "sapce-around"
+    }
+    
+
+    let laptops = Array.from(laptopEncoderCont.children).forEach(item => {
+        sTerm = item.textContent.toLocaleLowerCase()
+        if(sTerm.includes(searchTerm)){
+            item.style.display = "block"
+        }
+        else{
+            item.style.display = 'none'
+        }
+    })
+    let desktops = Array.from(desktopEncoderCont.children).forEach(item => {
+        sTerm = item.textContent.toLocaleLowerCase()
+        if(sTerm.includes(searchTerm)){
+            item.style.display = "block"
+        }
+        else{
+            item.style.display = 'none'
+        }
+    })
 }
