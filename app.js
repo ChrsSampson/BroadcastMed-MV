@@ -21,7 +21,7 @@ const importBtn = document.getElementById("import-btn")
 const settingBtn = document.getElementById("setting-btn")
 const settingPanel = document.getElementById('settings')
 const msg = document.getElementById("status-message")
-
+const viewCont = document.getElementById('view-container')
 
 
 // Check to see if local storage is empty
@@ -73,12 +73,9 @@ Placeholder = (element) => {
         <h3>There is nothing here</h3>
         </section>
         `)
-       
-
     }
     else{
         element.removeChild(document.getElementById('placeholder'))
-        
     }
 }
 
@@ -126,8 +123,7 @@ menuBtn.onclick = () => {
 settingBtn.onclick = () => {
     settingPanel.classList.toggle('setting-expanded')
     if(settingPanel.classList.contains('setting-expanded')){
-        settingBtn.src = "/img/leftArrow.svg"
-        settingBtn.style.rotate = "90deg"
+        settingBtn.src = "/img/upArrow.svg"
     }
     else{
         settingBtn.src = "/img/gear.svg"
@@ -163,4 +159,3 @@ sidebar.onclick = (e) => {
         Placeholder(windowCont);
     }
 }
-
