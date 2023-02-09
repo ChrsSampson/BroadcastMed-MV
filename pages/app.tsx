@@ -35,7 +35,7 @@ export async function getServerSideProps(ctx: any) {
     if(r) {
         return {
             props: {
-                user: r ? r.data : null,
+                user: r ? r : null,
                 data: 'data'
             }
         }
