@@ -5,7 +5,7 @@
     'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
-  --foreground-rgb: 0, 0, 0;
+  --foreground-rgb: #383838;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 
@@ -87,12 +87,12 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
+  /* background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
-    rgb(var(--background-start-rgb));
+    rgb(var(--background-start-rgb)); */
 }
 
 a {
@@ -100,8 +100,33 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
+.submit {
+  width: 100%;
+  max-width: 15rem;
+  background: rgb(var(--tile-start-rgb));
+  background: linear-gradient(
+    to bottom right,
+    rgb(var(--tile-start-rgb)),
+    rgb(var(--tile-end-rgb))
+  );
+  border: 1px solid rgb(var(--tile-border));
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  box-shadow: 0 0 0 1px rgb(var(--tile-border));
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.submit:hover {
+  background: linear-gradient(
+    to bottom right,
+    rgb(var(--tile-start-rgb)),
+    rgb(var(--tile-end-rgb))
+  );
+  box-shadow: 0 0 0 2px rgb(var(--tile-border));
+}
+
+/* @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
-}
+} */
