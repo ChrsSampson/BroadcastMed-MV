@@ -6,30 +6,8 @@ import axios from 'axios';
 import {useState, useEffect} from 'react';
 
 
-export function getServerSideProps() {
-
-  return {
-    props: {
-      data: 'data'
-    }
-  }
-}
 
 export default function Home() {
-  const [data, setData] = useState(null);
-
-  const getData = async () => {
-    try {
-      const res = await axios.get(`${process.env.API}/test`);
-      setData(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <>

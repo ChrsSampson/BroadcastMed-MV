@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import {Box, TextField, Button} from '@mui/material'
+import NavBar from "@/components/NavBar";
+import Viewer from "@/components/Viewer";
 import axios from "axios";
 import cookies from 'next-cookies'
 
@@ -14,6 +16,7 @@ interface Props {
     data: string
 }
 
+
 export async function getServerSideProps(ctx: any) {
 
     const cookie = cookies(ctx)
@@ -23,20 +26,20 @@ export async function getServerSideProps(ctx: any) {
     try{
         const result = await axios.get('http://localhost:3000/api/users/me', {
             headers: {
-               Cookie: `session=${cookie.session};` 
+               Cookie: `session=${cookie.session ? cookie.session : null};` 
             }
         });
-        r = result.data;
+        // axios non-sense
+        r = result.data.data
 
-    } catch (err) {
-        console.error(err);
+    } catch (err: any) {
+        console.log('Error', err.data);
     }
 
     if(r) {
         return {
             props: {
                 user: r ? r : null,
-                data: 'data'
             }
         }
     } else {
@@ -56,8 +59,8 @@ export default function App(props: Props) {
         <Box sx={{
             color: 'black'
         }}>
-            <h1>Hello</h1>
-            <p>{props.user.email}</p>
+            <NavBar user={props.user}/>
+            <Viewer />
         </Box>
     )
 }
