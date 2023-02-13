@@ -3,9 +3,8 @@ import {useState, useEffect} from 'react'
 import axios from 'axios'
 import EditList from '@/components/EditList'
 
-export default function EditWidget ({openModal} : {openModal: Function}) {
+export default function EditWidget ({openModal, handleTabChange, tab} : {openModal: Function, handleTabChange: Function, tab: Number}) {
 
-    const [tab, setTab] = useState<Number>(0);
     const [loading, setLoading] = useState<Boolean>(false);
     const [machines, setMachines] = useState<Array<any>>([]);
     const [users, setUsers] = useState<Array<any>>([]);
@@ -30,10 +29,6 @@ export default function EditWidget ({openModal} : {openModal: Function}) {
             setError(err.response.data.message);
             setLoading(false);
         }
-    }
-
-    function handleChange (e: React.SyntheticEvent, value: Number) {
-        setTab(value);
     }
 
     return (
@@ -63,7 +58,7 @@ export default function EditWidget ({openModal} : {openModal: Function}) {
                 <Tabs
                     value={tab}
                     indicatorColor="primary"
-                    onChange={handleChange}
+                    onChange={handleTabChange}
                 >
                     <Tab value={0} label="Users" />
                     <Tab value={1} label="Encoders" />

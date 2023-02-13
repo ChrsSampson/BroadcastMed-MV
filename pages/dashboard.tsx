@@ -1,6 +1,5 @@
 // Admin Dashboard Page
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import {Box, TextField, Button, Tab, Tabs} from '@mui/material'
 import { Typography } from "@mui/material";
 import CreateWidget from "@/components/CreateWidget";
@@ -48,12 +47,18 @@ export default function () {
     const [modalData, SetModalData] = useState<any>(null);
 
     function handleChange (e: React.SyntheticEvent, value: Number) {
+        console.log(value)
         setTab(value);
     }
 
     function openModal (data: any) {
         SetModalData(data);
         setOpen(true);
+    }
+
+    function closeModal () {
+        SetModalData(null);
+        setOpen(false);
     }
 
     return (
@@ -91,8 +96,8 @@ export default function () {
                 gap: '1em'
             }}>
                 <CreateWidget />
-                <EditWidget openModal={openModal} />
-                {open ? <EditForm data={null} open={open} mode={0} /> : null}
+                <EditWidget openModal={openModal} handleTabChange={handleChange} tab={tab} />
+                {open ? <EditForm data={modalData} open={open} closeModal={closeModal} mode={tab} /> : null}
             </Box>
         </Box>
     )
