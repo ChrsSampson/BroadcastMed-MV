@@ -7,9 +7,8 @@ export const config = {
     }
 }
 
-export default (req:NextApiRequest, res:NextApiResponse) => {
-
+export default function handler (req:NextApiRequest, res:NextApiResponse) {
     httpProxyMiddleware(req, res, {
         target: process.env.API,
     })
-} 
+}

@@ -15,15 +15,16 @@ export default function () {
             border: '1px solid black',
             borderRadius: '1rem',
             padding: '1rem',
-            maxWidth: '40rem',
+            minWidth: '30rem',
+            maxWidth: '60rem'
         }}>
         <Typography variant="h4" component="h1" sx={{paddingBottom: '1em', color: 'black'}}>Create</Typography>
-        <Box 
+        <Box
                 sx={{
                     paddingBottom: '1em'
                 }}
             >
-                <Tabs 
+                <Tabs
                     value={tab}
                     indicatorColor="primary"
                     onChange={handleChange}

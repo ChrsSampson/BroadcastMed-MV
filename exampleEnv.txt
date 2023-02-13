@@ -1,0 +1,1 @@
+API=http://[your Backend API] - used by the Frontend Proxy to forward requests to the backend
