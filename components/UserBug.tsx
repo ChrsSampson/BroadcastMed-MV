@@ -3,7 +3,6 @@
 import {Box, Button} from '@mui/material'
 import {useRouter} from 'next/router'
 import axios from 'axios'
-import { maxWidth } from '@mui/system'
 
 interface Props {
     user: {
@@ -17,11 +16,13 @@ export default function UserBug(props: Props) {
 
     const logout = () => {
         axios.post('/api/auth/logout')
-        .then(() => {
+        .then(res => {
             router.push('/login')
+            window.location.reload()
         })
         .catch(err => {
             console.log(err);
+            alert('Error logging out. Please try again later.')
         })
     }
 
