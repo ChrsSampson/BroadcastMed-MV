@@ -35,7 +35,7 @@ export default function LoginWidget({onSubmit}: {onSubmit: SubmitEvent}) {
             height: '100vh',
             backgroundColor: '#0B86DB'
         }}>
-            <form 
+            <form
                 style={{
                     display: 'grid',
                     gridTemplateColumns: '1fr 1fr',
@@ -48,7 +48,7 @@ export default function LoginWidget({onSubmit}: {onSubmit: SubmitEvent}) {
                     display: 'grid',
                     placeItems: 'center'
                 }}>
-                    <Image src="/icon.ico" alt="logo" width={150} height={150} />
+                    <Image priority src="/icon.ico" alt="logo" width={150} height={150} />
                 </Box>
                 <Box sx={{
                     display: 'flex',
@@ -65,7 +65,7 @@ export default function LoginWidget({onSubmit}: {onSubmit: SubmitEvent}) {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
-                <TextField 
+                <TextField
                     variant='outlined'
                     label="Password"
                     type="password"

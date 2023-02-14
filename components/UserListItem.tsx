@@ -17,9 +17,10 @@ export default function ({user, onClick}: {user: any, onClick: Function}) {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 width: '100%',
-                backgroundColor: 'lightgrey',
+                border: '1px solid lightgrey',
                 padding: '1em',
                 borderRadius: '1em',
+                marginBottom: '.5em'
             }}
         >
             <Typography style={{color: 'black'}} variant="h5" component="h1">
@@ -28,7 +29,7 @@ export default function ({user, onClick}: {user: any, onClick: Function}) {
             <Box sx={{
                 display: 'flex'
             }}>
-                <Typography style={{color: 'black'}} variant="h5" component="h1">
+                <Typography style={{color: 'black'}} variant="subtitle1" component="h1">
                     Last Updated: { user.lastUpdated ? date(user.lastUpdated) : 'Never'}
                 </Typography>
                 <Button onClick={() => onClick(user)} >

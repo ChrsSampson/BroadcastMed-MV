@@ -16,7 +16,7 @@ export default function ({item, onClick}: {item: any, onClick: Function}) {
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
-            backgroundColor: 'lightgrey',
+            border: '1px solid lightgrey',
             padding: '1em',
             borderRadius: '1em',
             marginBottom: '.5em'

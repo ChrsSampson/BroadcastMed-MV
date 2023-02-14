@@ -2,27 +2,60 @@
 import {Box, TextField, Button, Typography, Modal, Select, MenuItem, Switch, FormControlLabel} from '@mui/material';
 import {useState} from 'react';
 import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios'
 
 export default function ({data, open, mode, closeModal} : {data: any, mode: Number, open: Boolean, closeModal: Function}) {
 
-    const [name, setName] = useState<String>('');
-    const [email, setEmail] = useState<String>('');
+    const [name, setName] = useState<String>(data.displayName || '');
+    const [email, setEmail] = useState<String>(data.email || '');
 
-    const [category, setCategory] = useState<String>('');
-    const [link, setLink] = useState<String>('');
-    const [encoderName, setEncoderName] = useState<String>('');
-    const [role, setRole] = useState<Boolean>(false);
+    const [category, setCategory] = useState<String>(data.tag || '');
+    const [link, setLink] = useState<String>(data.link || '');
+    const [encoderName, setEncoderName] = useState<String>(data.name || '');
+    const [role, setRole] = useState<Boolean>(data.role === 'admin' ? true : false);
+
+    const [error, setError] = useState<String>('');
 
     // mode 0 = user, mode 1 = machine
 
-    function handleUserEdit (e: React.SyntheticEvent) {
+    async function handleUserEdit (e: React.SyntheticEvent) {
         e.preventDefault();
-        console.log('edit user');
+        const id = data._id;
+        if(!id){
+            setError('Missing document ID, try logging out and back in.')
+        } else {
+            try{
+                const r = await axios.put('http://localhost:3000/api/users/' + id, {
+                    displayName: name,
+                    username: email,
+                    role: role ? 'admin' : 'user'
+                })
+                closeModal();
+            } catch (err: any) {
+                console.error(err)
+                setError(err.response.data.message)
+            }
+        }
     }
 
-    function handleMachineEdit (e: React.SyntheticEvent) {
+    async function handleMachineEdit (e: React.SyntheticEvent) {
         e.preventDefault();
-        console.log('edit machine');
+        const id = data._id;
+        if(!id){
+            setError('Missing document ID, try logging out and back in.')
+        } else {
+            try{
+                const r = await axios.put('http://localhost:3000/api/machines/' + id, {
+                    name: encoderName,
+                    link: link,
+                    tag: category
+                })
+                closeModal();
+            } catch (err: any) {
+                console.error(err)
+                setError(err.response.data.message)
+            }
+        }
     }
 
     return (
@@ -62,6 +95,7 @@ export default function ({data, open, mode, closeModal} : {data: any, mode: Numb
                             <CloseIcon />
                         </Button>
                     </Box>
+                    { error ? <Typography style={{color: 'red'}} variant="h5" component="h1">{error}</Typography> : null }
                     <form
                         onSubmit={mode === 0 ? handleUserEdit : handleMachineEdit}
                         style={{
@@ -77,16 +111,21 @@ export default function ({data, open, mode, closeModal} : {data: any, mode: Numb
                                 <TextField
                                     label="Display Name"
                                     variant="outlined"
-                                    defaultValue={''}
+                                    defaultValue={data.displayName}
                                     onChange={(e) => setName(e.target.value)}
                                 />
                                 <TextField
                                     label="Email"
                                     variant="outlined"
-                                    defaultValue={''}
+                                    defaultValue={data.email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
-                                <FormControlLabel sx={{color: 'black'}} control={<Switch onChange={() => setRole(!role)}  />} label="Administrator Privledges" labelPlacement="end" />
+                                <FormControlLabel
+                                    sx={{color: 'black'}}
+                                    control={<Switch defaultChecked={data.role === 'admin' ? true : false} onChange={() => setRole(!role)}  />}
+                                    label="Administrator Privledges"
+                                    labelPlacement="end"
+                                />
                             </>
                             :
                             <>
@@ -94,7 +133,7 @@ export default function ({data, open, mode, closeModal} : {data: any, mode: Numb
                                     label="Machine Name"
                                     variant="outlined"
                                     defaultValue={data.name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    onChange={(e) => setEncoderName(e.target.value)}
                                 />
                                 <TextField
                                     label="Link"
