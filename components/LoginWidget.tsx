@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import axios from 'axios';
-import {Box, TextField, Button} from '@mui/material'
+import {Box, TextField, Button, Snackbar, Alert} from '@mui/material'
 import Image from 'next/image';
 
 interface SubmitEvent {
@@ -59,13 +59,16 @@ export default function LoginWidget({onSubmit}: {onSubmit: SubmitEvent}) {
                     padding: '1rem',
                     borderRadius: '0 1rem 1rem 0',
                 }}>
+                    
                 <TextField
+                    error={error ? true : false}
                     variant='outlined'
                     label="Email"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <TextField
+                    error={error ? true : false}
                     variant='outlined'
                     label="Password"
                     type="password"
@@ -74,9 +77,13 @@ export default function LoginWidget({onSubmit}: {onSubmit: SubmitEvent}) {
                 />
                 <Button variant='contained' type="submit" disabled={loading}>Login</Button>
                 </Box>
-                {error ? <p style={{color: 'black'}}>{error}</p> : null}
             </form>
         </Box>
+        <Snackbar open={error ? true : false} autoHideDuration={6000} message={error} >
+            <Alert severity="error" variant="filled" sx={{ width: '100%' }} >
+                {error}
+            </Alert>
+        </Snackbar>
         </>
     );
 }

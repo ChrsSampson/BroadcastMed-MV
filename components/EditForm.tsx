@@ -183,7 +183,7 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
                                     displayEmpty
                                     labelId="Category"
                                     id="Category"
-                                    value={data.tag}
+                                    value={category}
                                     onChange={(e) => setCategory(e.target.value)}
                                 >
                                     <MenuItem value="untagged">Untagged</MenuItem>
