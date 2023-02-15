@@ -20,7 +20,7 @@ export default function ({encoder, removeEncoder} : {encoder: Encoder, removeEnc
                 border: '1px solid lightgrey',
                 borderRadius: '5px',
                 margin: '.5rem',
-                height: '20em',
+                height: '35em',
                 overflow: 'hidden'
             }}
             onMouseLeave={() => setCollapse(false)}
@@ -35,7 +35,7 @@ export default function ({encoder, removeEncoder} : {encoder: Encoder, removeEnc
                     padding: '.5rem',
                     backgroundColor: '#0B86DB'
                 }}>
-                    <Typography color="white" variant="h6">{encoder.name}</Typography>
+                    <Typography color="white" variant="h6">{encoder.tag} {encoder.name}</Typography>
                     <Button color="error" variant="contained" onClick={() => removeEncoder(encoder._id)}>Remove</Button>
                 </Box>
             :null

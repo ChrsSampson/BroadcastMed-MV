@@ -3,33 +3,32 @@ import {useState, useEffect} from 'react'
 import axios from 'axios'
 import EditList from '@/components/EditList'
 
-export default function EditWidget ({openModal, handleTabChange, tab} : {openModal: Function, handleTabChange: Function, tab: Number}) {
-
-    const [loading, setLoading] = useState<Boolean>(false);
-    const [machines, setMachines] = useState<Array<any>>([]);
-    const [users, setUsers] = useState<Array<any>>([]);
-    const [error, setError] = useState<String>('');
-    const [search, setSearch] = useState<String>('');
-
-    useEffect(() => {
-        populateState();
-    }, [])
-
-    // get all machines and all users and mount them in state
-    async function populateState () {
-        setLoading(true);
-        try{
-            const machines = await axios.get('/api/machines');
-            const users = await axios.get('/api/users');
-            setMachines([...machines.data.data]);
-            setUsers([...users.data.data]);
-            setLoading(false);
-        } catch (err: any) {
-            console.error(err);
-            setError(err.response.data.message);
-            setLoading(false);
-        }
+export default function EditWidget (
+    {
+        openModal,
+        handleTabChange,
+        tab,
+        machines,
+        users,
+        error,
+        search,
+        setSearch,
+        loading
+    } 
+    :
+    {
+        openModal: Function,
+        handleTabChange: Function,
+        tab: Number,
+        machines: Array<any>,
+        users: Array<any>,
+        error: String,
+        search: String,
+        setSearch: Function
+        loading: Boolean
     }
+    ) {
+
 
     return (
         <Box sx={{

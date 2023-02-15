@@ -46,8 +46,34 @@ export default function () {
     const [open, setOpen] = useState<Boolean>(false);
     const [modalData, SetModalData] = useState<any>(null);
 
+    const [loading, setLoading] = useState<Boolean>(false);
+    const [machines, setMachines] = useState<Array<any>>([]);
+    const [users, setUsers] = useState<Array<any>>([]);
+    const [error, setError] = useState<String>('');
+    const [search, setSearch] = useState<String>('');
+
+
+    useEffect(() => {
+        populateState();
+    }, [])
+
+    // get all machines and all users and mount them in state
+    async function populateState () {
+        setLoading(true);
+        try{
+            const machines = await axios.get('/api/machines');
+            const users = await axios.get('/api/users');
+            setMachines([...machines.data.data]);
+            setUsers([...users.data.data]);
+            setLoading(false);
+        } catch (err: any) {
+            console.error(err);
+            setError(err.response.data.message);
+            setLoading(false);
+        }
+    }
+
     function handleChange (e: React.SyntheticEvent, value: Number) {
-        console.log(value)
         setTab(value);
     }
 
@@ -59,6 +85,10 @@ export default function () {
     function closeModal () {
         SetModalData(null);
         setOpen(false);
+    }
+
+    function refreshList () {
+        populateState();
     }
 
     return (
@@ -96,8 +126,18 @@ export default function () {
                 gap: '1em'
             }}>
                 <CreateWidget />
-                <EditWidget openModal={openModal} handleTabChange={handleChange} tab={tab} />
-                {open ? <EditForm data={modalData} open={open} closeModal={closeModal} mode={tab} /> : null}
+                <EditWidget
+                    openModal={openModal}
+                    handleTabChange={handleChange}
+                    tab={tab}
+                    machines={machines}
+                    users={users}
+                    loading={loading}
+                    error={error}
+                    search={search}
+                    setSearch={setSearch}
+                />
+                {open ? <EditForm data={modalData} open={open} closeModal={closeModal} mode={tab} refresh={refreshList} /> : null}
             </Box>
         </Box>
     )

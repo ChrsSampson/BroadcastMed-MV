@@ -1,5 +1,5 @@
 // list item for edit list
-import {Box, Button, Typography} from '@mui/material'
+import {Box, Button, Typography, IconButton} from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
 
 export default function ({item, onClick}: {item: any, onClick: Function}) {
@@ -32,9 +32,12 @@ export default function ({item, onClick}: {item: any, onClick: Function}) {
                 <Typography style={{color: 'black'}} variant="subtitle1" component="h1">
                     Last Updated {date(item.lastUpdated)}
                 </Typography>
-                <Button onClick={() => onClick(item)} >
+                <IconButton
+                    onClick={() => onClick(item)} 
+                    color='primary'
+                >
                     <EditIcon />
-                </Button>
+                </IconButton>
             </Box>
         </Box>
     )

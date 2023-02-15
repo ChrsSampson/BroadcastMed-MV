@@ -1,10 +1,10 @@
 // edit form component
-import {Box, TextField, Button, Typography, Modal, Select, MenuItem, Switch, FormControlLabel} from '@mui/material';
+import {Box, TextField, Button, Typography, Modal, Select, MenuItem, Switch, FormControlLabel, Toolbar, Dialog, DialogTitle, DialogContent} from '@mui/material';
 import {useState} from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios'
 
-export default function ({data, open, mode, closeModal} : {data: any, mode: Number, open: Boolean, closeModal: Function}) {
+export default function ({data, open, mode, closeModal, refresh} : {data: any, mode: Number, open: Boolean, closeModal: Function, refresh: Function}) {
 
     const [name, setName] = useState<String>(data.displayName || '');
     const [email, setEmail] = useState<String>(data.email || '');
@@ -15,6 +15,8 @@ export default function ({data, open, mode, closeModal} : {data: any, mode: Numb
     const [role, setRole] = useState<Boolean>(data.role === 'admin' ? true : false);
 
     const [error, setError] = useState<String>('');
+
+    const [showDialog, setShowDialog] = useState<boolean>(false);
 
     // mode 0 = user, mode 1 = machine
 
@@ -31,6 +33,7 @@ export default function ({data, open, mode, closeModal} : {data: any, mode: Numb
                     role: role ? 'admin' : 'user'
                 })
                 closeModal();
+                refresh();
             } catch (err: any) {
                 console.error(err)
                 setError(err.response.data.message)
@@ -51,6 +54,41 @@ export default function ({data, open, mode, closeModal} : {data: any, mode: Numb
                     tag: category
                 })
                 closeModal();
+                refresh();
+            } catch (err: any) {
+                console.error(err)
+                setError(err.response.data.message)
+            }
+        }
+    }
+
+    async function handleUserDelete (e: React.SyntheticEvent) {
+        e.preventDefault();
+        const id = data._id;
+        if(!id){
+            setError('Missing document ID, try logging out and back in.')
+        } else {
+            try{
+                const r = await axios.delete('http://localhost:3000/api/users/' + id);
+                closeModal();
+                refresh();
+            } catch (err: any) {
+                console.error(err)
+                setError(err.response.data.message)
+            }
+        }
+    }
+
+    async function handleMachineDelete (e: React.SyntheticEvent) {
+        e.preventDefault();
+        const id = data._id;
+        if(!id){
+            setError('Missing document ID, try logging out and back in.')
+        } else {
+            try{
+                const r = await axios.delete('http://localhost:3000/api/machines/' + id);
+                closeModal();
+                refresh();
             } catch (err: any) {
                 console.error(err)
                 setError(err.response.data.message)
@@ -81,7 +119,7 @@ export default function ({data, open, mode, closeModal} : {data: any, mode: Numb
                         width: '50%',
                     }}
                 >
-                    <Box
+                    <Toolbar
                         sx ={{
                             display: 'flex',
                             flexDirection: 'row',
@@ -94,7 +132,7 @@ export default function ({data, open, mode, closeModal} : {data: any, mode: Numb
                         <Button variant='contained' color="error" onClick={() => closeModal()}>
                             <CloseIcon />
                         </Button>
-                    </Box>
+                    </Toolbar>
                     { error ? <Typography style={{color: 'red'}} variant="h5" component="h1">{error}</Typography> : null }
                     <form
                         onSubmit={mode === 0 ? handleUserEdit : handleMachineEdit}
@@ -157,9 +195,36 @@ export default function ({data, open, mode, closeModal} : {data: any, mode: Numb
                                 </Select>
                             </>
                         }
-
                         <Button variant="contained" type="submit">Submit</Button>
+                        <Button variant="contained" color="error" onClick={() => setShowDialog(true)}>Delete</Button>
                     </form>
+                    <Dialog
+                        open={showDialog}
+                    >
+                        <DialogTitle>
+                            Delete {mode === 0 ? data.email : data.name }?
+                        </DialogTitle>
+                        <DialogContent
+                            sx={{
+                                display: 'flex',
+                                gap: '1em',
+                            }}
+                        >
+                            <Button 
+                                variant="contained"
+                                color="error"
+                                onClick={mode === 0 ? handleUserDelete : handleMachineDelete}
+                            >
+                                Yes
+                            </Button>
+                            <Button
+                                onClick={() => setShowDialog(false)}
+                                variant="contained"
+                            >
+                                No
+                            </Button>
+                        </DialogContent>
+                    </Dialog>
                 </Box>
             </Box>
         </Modal>
