@@ -104,8 +104,7 @@ export default function App(props: Props) {
         <Box sx={{
             color: 'black'
         }}>
-            <NavBar user={props.user}/>
-            <Button variant="contained" onClick={toggleDrawer} >Open</Button>
+            <NavBar user={props.user} openDrawer={toggleDrawer} />
             <Drawer
                 anchor="left"
                 open={openDrawer}
