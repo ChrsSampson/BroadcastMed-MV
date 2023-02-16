@@ -18,14 +18,14 @@ export default function EditWidget (
     :
     {
         openModal: Function,
-        handleTabChange: Function,
+        handleTabChange: (e: React.SyntheticEvent, value: number) => void,
         tab: Number,
         machines: Array<any>,
         users: Array<any>,
         error: String,
         search: String,
         setSearch: Function
-        loading: Boolean
+        loading: boolean
     }
     ) {
 

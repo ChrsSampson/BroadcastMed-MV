@@ -4,7 +4,7 @@ import {useState} from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios'
 
-export default function ({data, open, mode, closeModal, refresh} : {data: any, mode: Number, open: Boolean, closeModal: Function, refresh: Function}) {
+export default function ({data, open, mode, closeModal, refresh} : {data: any, mode: Number, open: boolean, closeModal: Function, refresh: Function}) {
 
     const [name, setName] = useState<String>(data.displayName || '');
     const [email, setEmail] = useState<String>(data.email || '');
@@ -12,7 +12,7 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
     const [category, setCategory] = useState<String>(data.tag || '');
     const [link, setLink] = useState<String>(data.link || '');
     const [encoderName, setEncoderName] = useState<String>(data.name || '');
-    const [role, setRole] = useState<Boolean>(data.role === 'admin' ? true : false);
+    const [role, setRole] = useState<boolean>(data.role === 'admin' ? true : false);
 
     const [error, setError] = useState<String>('');
 

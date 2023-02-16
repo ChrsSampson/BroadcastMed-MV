@@ -50,6 +50,11 @@ export async function getServerSideProps(ctx: any) {
     }
 }
 
+interface Encoder{
+    _id: string,
+    name: string,
+    link: string
+}
 
 export default function App(props: Props) {
 
@@ -58,8 +63,7 @@ export default function App(props: Props) {
     const [desktops, setDesktops] = useState<string[]>([])
     const [enclosures, setEnclousures] = useState<string[]>([])
     const [openDrawer, setOpenDrawer] = useState<boolean>(false)
-    const [selectedEncoders, setSelectedEncoders] = useState<Object[]>([])
-
+    const [selectedEncoders, setSelectedEncoders] = useState<Array<Encoder> >([])
 
     useEffect(() => {
         getEncoders()
@@ -69,11 +73,11 @@ export default function App(props: Props) {
         setOpenDrawer(!openDrawer)
     }
 
-    function addEncoder (data: Object) {
+    function addEncoder (data: Encoder) {
         setSelectedEncoders([...selectedEncoders, data])
     }
 
-    function removeEncoder (id) {
+    function removeEncoder (id: string) {
         setSelectedEncoders(selectedEncoders.filter((encoder) => encoder._id !== id))
     }
 

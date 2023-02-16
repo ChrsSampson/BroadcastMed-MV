@@ -43,10 +43,10 @@ export async function getServerSideProps(ctx: any) {
 
 export default function () {
     const [tab, setTab] = useState<Number>(0);
-    const [open, setOpen] = useState<Boolean>(false);
+    const [open, setOpen] = useState(false);
     const [modalData, SetModalData] = useState<any>(null);
 
-    const [loading, setLoading] = useState<Boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [machines, setMachines] = useState<Array<any>>([]);
     const [users, setUsers] = useState<Array<any>>([]);
     const [error, setError] = useState<String>('');
