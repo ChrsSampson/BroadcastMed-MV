@@ -1,6 +1,6 @@
 const express = require('express');
 const Response = require('../lib/Response');
-const asyncHandler = require('../lib/asyncHandler');
+const asyncHandler = require('../lib/AsyncHandler');
 
 const router = express.Router();
 
