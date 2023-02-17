@@ -5,6 +5,15 @@ import axios from 'axios';
 
 import {useState, useEffect} from 'react';
 
+export async function getServerSideProps(ctx: any) {
+  // redirect the user to the app
+  return {
+    redirect: {
+      destination: '/app',
+      permanent: false
+    }
+  }
+}
 
 
 export default function Home() {
@@ -18,7 +27,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        
       </main>
     </>
   )

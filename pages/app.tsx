@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Head from 'next/head'
-import {Box, TextField, Button} from '@mui/material'
+import {Box, Alert, Snackbar} from '@mui/material'
 import NavBar from "@/components/NavBar";
 import Viewer from "@/components/Viewer";
 import axios from "axios";
@@ -31,7 +31,7 @@ export async function getServerSideProps(ctx: any) {
         // axios non-sense
         r = result.data.data
     } catch (err: any) {
-        console.log('Error', err.data);
+        console.log('Error', err);
     }
 
     if(r) {
@@ -64,6 +64,7 @@ export default function App(props: Props) {
     const [enclosures, setEnclousures] = useState<string[]>([])
     const [openDrawer, setOpenDrawer] = useState<boolean>(false)
     const [selectedEncoders, setSelectedEncoders] = useState<Array<Encoder> >([])
+    const [error, setError] = useState<string>('')
 
     useEffect(() => {
         getEncoders()
@@ -84,16 +85,17 @@ export default function App(props: Props) {
 
     async function getEncoders () {
         try{
-            const l = await axios.get('http://localhost:3000/api/machines/tag/Laptop Encoder')
+            const l = await axios.get('/api/machines/tag/Laptop Encoder')
             setLaptops(l.data.data)
-            const r = await axios.get('http://localhost:3000/api/machines/tag/Radius')
+            const r = await axios.get('/api/machines/tag/Radius')
             setRadius(r.data.data)
-            const d = await axios.get('http://localhost:3000/api/machines/tag/Desktop Encoder')
+            const d = await axios.get('/api/machines/tag/Desktop Encoder')
             setDesktops(d.data.data)
             const e = await axios.get('http://localhost:3000/api/machines/tag/Enclosure')
             setEnclousures(e.data.data)
         } catch (err: any) {
             console.log('Error', err);
+            setError(`Backend Error ${err.status}`)
         }
     }
 
@@ -105,9 +107,11 @@ export default function App(props: Props) {
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <link rel="icon" href="/icon.ico" />
         </Head>
-        <Box sx={{
-            color: 'black'
-        }}>
+        <Box
+            sx={{
+                color: 'black'
+            }}
+        >
             <NavBar user={props.user} openDrawer={toggleDrawer} />
             <Drawer
                 anchor="left"
@@ -116,6 +120,11 @@ export default function App(props: Props) {
                 <ViewerSidebar toggleDrawer={toggleDrawer} addEncoder={addEncoder} laptops={laptops} radius={radius} desktops={desktops} enclosures={enclosures} />
             </Drawer>
             <Viewer selectedEncoders={selectedEncoders} removeEncoder={removeEncoder} />
+            <Snackbar open={error ? true : false} autoHideDuration={6000} message={error} >
+                <Alert severity="error" variant="filled" sx={{ width: '100%' }} >
+                    {error}
+                </Alert>
+            </Snackbar>
         </Box>
         </>
     )

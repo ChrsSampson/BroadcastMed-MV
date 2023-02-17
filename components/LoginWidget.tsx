@@ -3,11 +3,9 @@ import axios from 'axios';
 import {Box, TextField, Button, Snackbar, Alert} from '@mui/material'
 import Image from 'next/image';
 
-interface SubmitEvent {
-    (username: string, password: string): void
-}
 
-export default function LoginWidget({onSubmit}: {onSubmit: SubmitEvent}) {
+
+export default function LoginWidget({onSubmit}: {onSubmit: Function}) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -20,9 +18,9 @@ export default function LoginWidget({onSubmit}: {onSubmit: SubmitEvent}) {
         try {
             if(!username || !password) throw new Error('Invalid username or password');
             await onSubmit(username, password)
-        } catch (err) {
-            console.error(err);
+        } catch (err:any) {
             setError('Invalid username or password');
+            console.error(err)
         }
         setLoading(false);
     };
@@ -42,7 +40,7 @@ export default function LoginWidget({onSubmit}: {onSubmit: SubmitEvent}) {
                     borderRadius: '1.25rem',
                     border: '1px solid white',
                 }}
-            onSubmit={handleSubmit}
+                onSubmit={(e) => handleSubmit(e)}
             >
                 <Box sx={{
                     display: 'grid',
