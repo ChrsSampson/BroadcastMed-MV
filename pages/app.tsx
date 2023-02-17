@@ -91,11 +91,11 @@ export default function App(props: Props) {
             setRadius(r.data.data)
             const d = await axios.get('/api/machines/tag/Desktop Encoder')
             setDesktops(d.data.data)
-            const e = await axios.get('http://localhost:3000/api/machines/tag/Enclosure')
+            const e = await axios.get('/api/machines/tag/Enclosure')
             setEnclousures(e.data.data)
         } catch (err: any) {
             console.log('Error', err);
-            setError(`Backend Error ${err.status}`)
+            setError(`Backend Error ${err.message}`)
         }
     }
 
