@@ -4,8 +4,6 @@ const Response = require('../lib/Response');
 module.exports  = function (req, res, next) {
     const {session} = req.cookies;
 
-    console.log('Session', session);
-
     if(!session) {
         const response = new Response(401, 'Error: Unauthorized', null, {error: 'Unauthorized'});
         response.send(res);

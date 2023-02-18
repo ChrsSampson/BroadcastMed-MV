@@ -1,9 +1,7 @@
-const mocha = require('mocha');
 const chai = require('chai');
 const expect = chai.expect;
 const request = require('supertest');
 const dotenv = require('dotenv');
-const cookieJar = request('cookieJar')
 
 const app = require('../app');
 
@@ -14,8 +12,10 @@ const User = require('../models/User');
 const Machine = require('../models/Machine');
 const req = require('express/lib/request');
 
-describe.only('User API', () => {
+describe('User API', () => {
     let createdUserId = null
+
+    let session = null;
 
     // setup and cleanup
     let ids = null
@@ -24,7 +24,6 @@ describe.only('User API', () => {
         seeder()
             .then((data) => {
                 ids = data;
-                console.log(ids)
                 done();
             })
             .catch(err => {
@@ -33,16 +32,16 @@ describe.only('User API', () => {
     });
 
     beforeEach((done) => {
+        // login to get session with seed user
         request(app)
             .post('/api/auth/login')
             .send({
-                username: 'a@test.com',
-                password: 'admin'
+                username: 'admin',
+                password: '1'
             })
             .expect('Content-Type', /json/)
             .expect(res => {
-                console.log(res.getCookies)
-                res.body.message === 'Login Successful'
+                session = res.body.data.session;
             })
             .end((err, res) => {
                 if(err) throw err;
@@ -59,17 +58,16 @@ describe.only('User API', () => {
         Machine.deleteMany({}, (err) => {
             if(err) throw err;
             done();
-        }) 
+        })
     });
 
     it('Should fail to create a user with missing fields', (done) => {
         request(app)
             .post('/api/users')
+            .set('Cookie', [`session=${session}`])
             .send({
                 username: 'testyBoi'
             })
-            .expect(400)
-            .expect('Content-Type', /json/)
             .expect(res => {
                 res.body.message === 'Missing Required Field (username, password)'
             })
@@ -82,6 +80,7 @@ describe.only('User API', () => {
     it('Should be able to create a new User with required fields filled', (done) => {
         request(app)
             .post('/api/users')
+            .set('Cookie', [`session=${session}`])
             .send({
                 username: 'testyBoi',
                 password: '1234'
@@ -102,6 +101,7 @@ describe.only('User API', () => {
     it('Should be able to get a list of all users', (done) => {
         request(app)
             .get('/api/users')
+            .set('Cookie', [`session=${session}`])
             .expect(200)
             .expect('Content-Type', /json/)
             .expect((res) => {
@@ -122,6 +122,7 @@ describe.only('User API', () => {
     it('Should be able to find a specific user by id', (done) => {
         request(app)
             .get(`/api/users/${ids.users[0]}`)
+            .set('Cookie', [`session=${session}`])
             .expect(200)
             .expect(res => {
                 res.body.data._id === ids.users[0]
@@ -136,6 +137,7 @@ describe.only('User API', () => {
     it('Should be able to update a specific user by id', (done) => {
         request(app)
             .put(`/api/users/${createdUserId}`)
+            .set('Cookie', [`session=${session}`])
             .send({
                 username: 'SuperTestyBoi'
             })
@@ -154,6 +156,7 @@ describe.only('User API', () => {
     it('Should be able find a delete a specific user by id', (done) => {
         request(app)
             .delete(`/api/users/${createdUserId}`)
+            .set('Cookie', [`session=${session}`])
             .expect(200)
             .expect(res => {
                 res.body.data._id === createdUserId
@@ -161,14 +164,16 @@ describe.only('User API', () => {
             .end((err, res) => {
                 if(err) throw err;
                 done()
-                      s })
+            });
     })
 
 });
- 
+
 describe('Machine API', () => {
     let createdId = null;
     let currentName = null;
+
+    let session = null;
 
     // setup and cleanup
     let ids = null
@@ -180,6 +185,24 @@ describe('Machine API', () => {
                 done();
             })
             .catch(err => {
+                done(err);
+            });
+    });
+
+    beforeEach((done) => {
+        // login to get session with seed user
+        request(app)
+            .post('/api/auth/login')
+            .send({
+                username: 'admin',
+                password: '1'
+            })
+            .expect('Content-Type', /json/)
+            .expect(res => {
+                session = res.body.data.session;
+            })
+            .end((err, res) => {
+                if(err) throw err;
                 done(err);
             });
     });
@@ -198,6 +221,7 @@ describe('Machine API', () => {
     it('should create a new machine', (done) => {
         request(app)
             .post('/api/machines')
+            .set('Cookie', [`session=${session}`])
             .send({
                 name: 'Test Machine',
                 link: 'http://test.com'
@@ -218,12 +242,12 @@ describe('Machine API', () => {
     it('Should fail to create machine without name', (done) => {
         request(app)
             .post('/api/machines')
+            .set('Cookie', [`session=${session}`])
             .send({
                 link: 'http://test.com'
             })
-            .expect(400)
             .expect((res) => {
-                expect(res.body.message).to.equal('Missing required fields (name, link)');
+                expect(res.body.message).to.equal('Error: Missing required fields (name, link)');
             })
             .end((err) => {
                 if(err) return done(err);
@@ -234,22 +258,23 @@ describe('Machine API', () => {
     it('Should fail to create machine without link', (done) => {
         request(app)
             .post('/api/machines')
+            .set('Cookie', [`session=${session}`])
             .send({
                 name: 'Test Machine'
             })
-            .expect(400)
             .expect((res) => {
-                expect(res.body.message).to.equal('Missing required fields (name, link)');
+                expect(res.body.message).to.equal('Error: Missing required fields (name, link)');
             })
             .end((err) => {
                 if(err) return done(err);
                 done();
             })
-    })  
+    })
 
     it('should return a list of all machines', (done) => {
         request(app)
             .get('/api/machines')
+            .set('Cookie', [`session=${session}`])
             .expect((res) => {
                 expect(res.body.data).to.be.an('array');
                 expect(res.body.data).to.have.lengthOf(5);
@@ -263,6 +288,7 @@ describe('Machine API', () => {
     it('should be able to lookup a single machine', (done) => {
         request(app)
             .get(`/api/machines/${createdId}`)
+            .set('Cookie', [`session=${session}`])
             .expect((res) => {
                 expect(res.body.data.name).to.equal(currentName);
             })
@@ -275,6 +301,7 @@ describe('Machine API', () => {
     it('Should update a Machine and return the updated machine', (done) => {
         request(app)
             .put(`/api/machines/${createdId}`)
+            .set('Cookie', [`session=${session}`])
             .send({
                 name: 'Updated Machine',
                 link: 'http://updated.com',
@@ -297,6 +324,7 @@ describe('Machine API', () => {
     it('Should delete a Machine and return the deleted machine', (done) => {
         request(app)
             .delete(`/api/machines/${createdId}`)
+            .set('Cookie', [`session=${session}`])
             .expect(200)
             .expect((res) => {
                 expect(res.body.data._id).to.equal(createdId);
@@ -311,18 +339,49 @@ describe('Machine API', () => {
 
 describe('Auth API', () => {
     let createdUserId = null
+    let session = null
+
+    before((done) => {
+        seeder()
+            .then((data) => {
+                ids = data;
+                done();
+            })
+            .catch(err => {
+                done(err);
+            });
+    });
+
+    before((done) => {
+        request(app)
+            .post('/api/auth/login')
+            .send({
+                username: 'admin',
+                password: '1'
+            })
+            .expect(res => {
+                session = res.body.data.session;
+            })
+            .end((err, res) => {
+                if(err) throw err;
+                done(err);
+            });
+    });
 
     after((done) => {
-        // remove the created user
         User.deleteMany({}, (err) => {
             if(err) throw err;
-            done()
         });
+        Machine.deleteMany({})
+            .then(() => {
+                done();
+            })
     });
 
     it('Should be able to create a user', async () => {
         request(app)
             .post('/api/users')
+            .set('Cookie', [`session=${session}`])
             .send({
                 username: 'AuthBoi',
                 password: '1234'
@@ -344,6 +403,7 @@ describe('Auth API', () => {
     it('Should be able to login a user', async () => {
         request(app)
             .post('/api/auth/login')
+            .set('Cookie', [`session=${session}`])
             .send({
                 username: 'AuthBoi',
                 password: '1234'

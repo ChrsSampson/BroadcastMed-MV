@@ -6,7 +6,7 @@ async function login (username, plainPassword) {
     try{
     // find user in database
         const user = await User.findOne({'email': username});
-        if(user.session){
+        if(user && user.session){
             // respond with existing session
             return user;
         }
@@ -45,6 +45,7 @@ async function logout (session) {
 
 }
 
+// User Self Service Password Reset
 function resetPassword (id, plainPassword) {
     try{
     // find user by id

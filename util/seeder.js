@@ -12,8 +12,8 @@ const testUsers = [
         role: 'user'
     },
     {
-        email: 'a@test.com',
-        password: 'admin',
+        email: 'admin',
+        password: '1',
         displayName: 'Test Admin',
         role: 'admin'
     }
@@ -64,7 +64,7 @@ async function seeder () {
             const newUser = new User(user);
             await newUser.save();
             Ids.users.push(newUser._id);
-    }   
+    }
 
     for(let machine of machines) {
         const test = await Machine.find({name: machine.name});
