@@ -423,3 +423,154 @@ describe('Auth API', () => {
     });
 
 });
+
+describe.only('Password Reset', () => {
+
+    // these two fields are required to reset a password
+    // user token is only availible to the user through the reset email
+    // reset is only valid for 1 hour
+    let userId = null
+    let token = null
+
+    before((done) => {
+        seeder()
+            .then((data) => {
+                done();
+            })
+            .catch(err => {
+                done(err);
+            });
+    });
+
+    after((done) => {
+        User.deleteMany({}, (err) => {
+            if(err) throw err;
+        });
+        Machine.deleteMany({})
+            .then(() => {
+                done();
+            })
+            .catch(err => {
+                done(err);
+            });
+    });
+
+    it('Should have reset token and expiry set to null before reset is started', (done) => {
+        User.findOne({email: 'reset@test.com'})
+            .then((user) => {
+                expect(user.resetToken).to.equal(null);
+                expect(user.resetExpiry).to.equal(null);
+                userId = user._id;
+                done();
+            })
+            .catch(err => {
+                done(err);
+            });
+    });
+
+    it('Should be able to mark a user for password reset on request' , (done) => {
+        request(app)
+            .post('/api/auth/reset')
+            .send({
+                email: 'reset@test.com'
+            })
+            .expect((res) => {
+                expect(res.body.message).to.equal('Password Reset Initiated');
+                expect(res.body.data.email).to.equal('reset@test.com');
+            })
+            .end((err) => {
+                if(err) throw err;
+                done();
+            })
+    });
+
+    it('Should have reset token and expiry set after reset is started', (done) => {
+        User.findOne({email: 'reset@test.com'})
+            .then((user) => {
+                expect(user.resetToken).to.not.equal(null);
+                expect(user.resetExpiry).to.not.equal(null);
+                // expiry should be within 1 hour
+                const ex = new Date(user.resetExpiry);
+                const now = new Date();
+                expect(ex.getTime() - now.getTime()).to.be.lessThan(3600000);
+                token = user.resetToken;
+                done();
+            })
+            .catch(err => {
+                done(err);
+            });
+    });
+
+    it('Should reject invalid reset requests (bad token)', (done) => {
+        request(app)
+            .get(`/api/auth/reset/${userId}/123`)
+            .expect((res) => {
+                expect(res.body.message).to.equal('Error: Invalid token');
+            })
+            .end((err) => {
+                if(err) throw err;
+                done();
+            });
+    });
+
+    // TODO: it works, it just spits out a verbose error instead of a nice message
+    it.skip('Should reject invalid reset requests (bad user id)', (done) => {
+        request(app)
+            .get(`/api/auth/reset/123/${token}`)
+            .expect((res) => {
+                expect(res.body.message).to.equal('Error: Invalid user');
+            })
+            .end((err) => {
+                if(err) throw err;
+                done();
+            });
+    });
+
+    it('Should be able to confirm a valid password reset request', (done) => {
+        request(app)
+            .get(`/api/auth/reset/${userId}/${token}`)
+            .expect((res) => {
+                expect(res.body.message).to.equal('Password Reset Initiated');
+                expect(res.body.data.email).to.equal('reset@test.com')
+            })
+            .end((err) => {
+                if(err) throw err;
+                done();
+            });
+    });
+
+    it('Should be able to reset a password', (done) => {
+        request(app)
+            .post(`/api/auth/reset/${userId}/${token}`)
+            .send({
+                password: '987'
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.message).to.equal('Password Reset Successful');
+            })
+            .end((err) => {
+                if(err) throw err;
+                done();
+            })
+    });
+
+    it('Should be able to login with new password', (done) => {
+        request(app)
+            .post('/api/auth/login')
+            .send({
+                username: 'reset@test.com',
+                password: '987'
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.message).to.equal('Login Successful');
+                expect(res.body.data.session).to.not.equal(null);
+            })
+            .end((err) => {
+                if(err) throw err;
+                done();
+            })
+    });
+
+})

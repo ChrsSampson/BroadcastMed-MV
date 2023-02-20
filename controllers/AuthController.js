@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const {v4} = require('uuid');
 
@@ -45,17 +44,107 @@ async function logout (session) {
 
 }
 
+//---------------------------------
 // User Self Service Password Reset
-function resetPassword (id, plainPassword) {
+//---------------------------------
+
+// begin password reset 
+// generate reset token and stick it to user
+// set expiry to 1 hour from now
+// send email to user with reset link containing token and userId
+async function beginReset (email) {
+    // the check for emaiul is done in the router
     try{
-    // find user by id
-        throw new Error('Not implemented');
-    // hash password
-    // update user in database
+        const token = v4();
+        // 1 hour from now
+        const expiry = new Date(Date.now() + (60 * 60 * 1000));
+
+        const UpdatedUser = await User.findOneAndUpdate({email: email}, {resetToken: token, resetExpiry: expiry}, {new: true})
+
+        // remote irreelevant fields
+        const userInfo = {
+            email: UpdatedUser.email,
+            displayName: UpdatedUser.displayName
+        }
+
+        return userInfo;
+    } catch (err) {
+        throw err;
+    }   
+}
+
+// check user token against user Id
+async function checkToken (id, token) {
+    try{
+        const user = await User.findById(id);
+
+        if(!user) {
+            throw new Error('Invalid token');
+        }
+
+        // user to info to be returned if valid
+        const userInfo = {
+            email: user.email,
+            displayName: user.displayName,
+            _id: user._id
+        }
+
+        // check if token matches
+        if(user.resetToken !== token) {
+            throw new Error(`Invalid token`);
+        }
+
+        const now = new Date();
+        const ex = new Date(user.resetExpiry);
+
+        // check if token expired
+        if(now > ex) {
+            throw new Error('Token expired, Try a different reset link or request a new one');
+        }
+
+        return userInfo;
+        
     } catch (err) {
         throw err;
     }
 }
 
 
-module.exports = {login, logout, resetPassword }
+// reset password
+async function resetPassword (id, token, plainPassword) {
+    try{
+        // find user by id 
+        const user = await User.findById(id);
+        if(!user) {
+            throw new Error('Invalid user');
+        }
+
+        // check token
+        if(user.resetToken !== token) {
+            throw new Error('Invalid token');
+        }
+        // check if token expired
+        const now = new Date();
+        const ex = new Date(user.resetExpiry);
+        if(now > ex) {
+            throw new Error('Token expired, Try a different reset link or request a new one');
+        }
+
+        // set the new password
+        user.password = plainPassword;
+        // clear token and expiry
+        user.resetToken = null;
+        user.resetExpiry = null;
+        // hash password - should be done in the model by pre save hook
+        const u = new User(user);
+        // update user in database
+        await u.save();
+
+        return 'Password reset successful'
+    } catch (err) {
+        throw err;
+    }
+}
+
+
+module.exports = {login, logout, resetPassword, beginReset, checkToken }

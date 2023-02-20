@@ -16,6 +16,12 @@ const testUsers = [
         password: '1',
         displayName: 'Test Admin',
         role: 'admin'
+    },
+    {
+        email: 'reset@test.com',
+        displayName: 'Test Rester',
+        password: '123',
+        role: 'user'
     }
 ]
 

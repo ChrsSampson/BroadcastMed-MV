@@ -4,7 +4,7 @@ const asyncHandler = require('../lib/AsyncHandler');
 
 const router = express.Router();
 
-const  {login, logout, resetPassword} = require('../controllers/AuthController');
+const  {login, logout, resetPassword, beginReset, checkToken} = require('../controllers/AuthController');
 
 //  api/auth/login
 router.post('/login', asyncHandler( async (req,res, next) => {
@@ -47,13 +47,67 @@ router.post('/logout', asyncHandler( async (req,res, next) => {
 }));
 
 
-router.post('/reset-password', asyncHandler( async (req,res, next) => {
+//---------------------------------
+// User Self Service Password Reset
+//---------------------------------
 
+// begin the password reset
+router.post('/reset', asyncHandler( async (req,res, next) => {
+    try{
+        const {email} = req.body;
+
+        if(!email) {
+            const response = new Response(400, 'Email required', null, {error: 'Email required'});
+            response.send(res);
+            return;
+        }
+
+        const result = await beginReset(email);
+        
+        const response = new Response(200, 'Password Reset Initiated', {...result}, null);
+        response.send(res);
+
+    } catch (err) {
+        throw err
+    }
+}));
+
+// check the token and reset the password
+router.get('/reset/:userId/:token', asyncHandler( async (req,res, next) => {
+    const {userId, token} = req.params;
+
+    try{
+        const result = await checkToken(userId, token);
+        const response = new Response(200, 'Password Reset Initiated', result, null);
+        response.send(res)
+    } catch (err) {
+        throw err
+    }
+}));
+
+// reset the users password
+router.post('/reset/:userId/:token', asyncHandler( async (req,res, next) => {
+    const {userId, token} = req.params;
+    const {password} = req.body;
+
+    if(!password) {
+        const response = new Response(400, 'Password required', null, {error: 'Password required'});
+        response.send(res);
+        return;
+    }
+
+    try{
+        const result = await resetPassword(userId, token, password);
+        const response = new Response(200, 'Password Reset Successful', result, null);
+        response.send(res)
+    } catch (err) {
+        throw err
+    }
 }));
 
 // router 404 handler
 router.use((req,res) => {
-    const response = new Response(404, 'Method Not Supported', null, {error: 'Method Not Supported'});
+    const response = new Response(404, 'Method Not Supported', null, {error: 'Method Not Supported', path: req.url, method: req.method});
     response.send(res);
 });
 
