@@ -27,7 +27,7 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
             setError('Missing document ID, try logging out and back in.')
         } else {
             try{
-                const r = await axios.put('http://localhost:3000/api/users/' + id, {
+                const r = await axios.put(`/api/users/${id}`, {
                     displayName: name,
                     username: email,
                     role: role ? 'admin' : 'user'
@@ -48,7 +48,7 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
             setError('Missing document ID, try logging out and back in.')
         } else {
             try{
-                const r = await axios.put('http://localhost:3000/api/machines/' + id, {
+                const r = await axios.put(`/api/machines/${id}`, {
                     name: encoderName,
                     link: link,
                     tag: category
@@ -69,7 +69,7 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
             setError('Missing document ID, try logging out and back in.')
         } else {
             try{
-                const r = await axios.delete('http://localhost:3000/api/users/' + id);
+                const r = await axios.delete(`/api/users/${id}`);
                 closeModal();
                 refresh();
             } catch (err: any) {
@@ -86,7 +86,7 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
             setError('Missing document ID, try logging out and back in.')
         } else {
             try{
-                const r = await axios.delete('http://localhost:3000/api/machines/' + id);
+                const r = await axios.delete(`/api/machines/${id}`);
                 closeModal();
                 refresh();
             } catch (err: any) {
