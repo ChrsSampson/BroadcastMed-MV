@@ -21,12 +21,11 @@
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
-    "cookiejar": "^2.1.4",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "mongoose": "^6.9.0",
-    "passport-local": "^1.0.0",
+    "nodemailer": "^6.9.1",
     "pm2": "^5.2.2",
     "uuid": "^9.0.0"
   },

@@ -1,10 +1,14 @@
 const express = require('express');
 const Response = require('../lib/Response');
 const asyncHandler = require('../lib/AsyncHandler');
+const {config} = require('dotenv');
 
 const router = express.Router();
 
 const  {login, logout, resetPassword, beginReset, checkToken} = require('../controllers/AuthController');
+const {mailTester} = require('../lib/mailer');
+
+config();
 
 //  api/auth/login
 router.post('/login', asyncHandler( async (req,res, next) => {
@@ -64,7 +68,14 @@ router.post('/reset', asyncHandler( async (req,res, next) => {
 
         const result = await beginReset(email);
         
-        const response = new Response(200, 'Password Reset Initiated', {...result}, null);
+         // reset email should be send here after the user has been updated with reset token
+         if(process.env.NODE_ENV === 'production') {
+            console.log('send email here')
+        } else {
+            await mailTester(result.emailInfo);
+        }
+
+        const response = new Response(200, 'Password Reset Initiated', {...result.userInfo}, null);
         response.send(res);
 
     } catch (err) {
@@ -78,7 +89,7 @@ router.get('/reset/:userId/:token', asyncHandler( async (req,res, next) => {
 
     try{
         const result = await checkToken(userId, token);
-        const response = new Response(200, 'Password Reset Initiated', result, null);
+        const response = new Response(200, 'Password Reset Confirmed', result, null);
         response.send(res)
     } catch (err) {
         throw err
@@ -98,6 +109,7 @@ router.post('/reset/:userId/:token', asyncHandler( async (req,res, next) => {
 
     try{
         const result = await resetPassword(userId, token, password);
+
         const response = new Response(200, 'Password Reset Successful', result, null);
         response.send(res)
     } catch (err) {

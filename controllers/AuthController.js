@@ -59,15 +59,22 @@ async function beginReset (email) {
         // 1 hour from now
         const expiry = new Date(Date.now() + (60 * 60 * 1000));
 
-        const UpdatedUser = await User.findOneAndUpdate({email: email}, {resetToken: token, resetExpiry: expiry}, {new: true})
+        const updatedUser = await User.findOneAndUpdate({email: email}, {resetToken: token, resetExpiry: expiry}, {new: true})
 
         // remote irreelevant fields
         const userInfo = {
-            email: UpdatedUser.email,
-            displayName: UpdatedUser.displayName
+            email: updatedUser.email,
+            displayName: updatedUser.displayName
         }
 
-        return userInfo;
+        const emailInfo = {
+            email: updatedUser.email,
+            displayName: updatedUser.displayName,
+            id: updatedUser._id, 
+            token: updatedUser.resetToken,
+        }
+
+        return {userInfo, emailInfo}
     } catch (err) {
         throw err;
     }   
