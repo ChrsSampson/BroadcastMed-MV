@@ -6,7 +6,7 @@ const {config} = require('dotenv');
 const router = express.Router();
 
 const  {login, logout, resetPassword, beginReset, checkToken} = require('../controllers/AuthController');
-const {mailTester} = require('../lib/mailer');
+const {mailTester, sendResetEmail} = require('../lib/mailer');
 
 config();
 
@@ -56,6 +56,7 @@ router.post('/logout', asyncHandler( async (req,res, next) => {
 //---------------------------------
 
 // begin the password reset
+// api/auth/reset
 router.post('/reset', asyncHandler( async (req,res, next) => {
     try{
         const {email} = req.body;
@@ -70,9 +71,11 @@ router.post('/reset', asyncHandler( async (req,res, next) => {
         
          // reset email should be send here after the user has been updated with reset token
          if(process.env.NODE_ENV === 'production') {
-            console.log('send email here')
+            await sendResetEmail(result.emailInfo);
         } else {
-            await mailTester(result.emailInfo);
+            // sends a test email to ethereal.email, credentials will be in terminal
+            // await mailTester(result.emailInfo);
+            await sendResetEmail(result.emailInfo);
         }
 
         const response = new Response(200, 'Password Reset Initiated', {...result.userInfo}, null);

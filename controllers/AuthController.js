@@ -86,7 +86,7 @@ async function checkToken (id, token) {
         const user = await User.findById(id);
 
         if(!user) {
-            throw new Error('Invalid token');
+            throw new Error('Invalid User');
         }
 
         // user to info to be returned if valid
@@ -97,7 +97,7 @@ async function checkToken (id, token) {
         }
 
         // check if token matches
-        if(user.resetToken !== token) {
+        if(String(user.resetToken) !== String(token) ) {
             throw new Error(`Invalid token`);
         }
 
