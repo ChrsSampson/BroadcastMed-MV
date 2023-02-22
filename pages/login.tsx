@@ -21,6 +21,7 @@ export default function Login() {
         })
         .catch(err => {
             console.log(err);
+            setError('Invalid username or password')
         })
     }
 

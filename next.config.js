@@ -5,7 +5,7 @@ module.exports = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://192.168.0.194:4000/api/:path*",
+        destination: `${process.env.API}/api/:path*`,
       }
     ];
   },
