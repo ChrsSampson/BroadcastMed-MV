@@ -29,7 +29,7 @@ app.use('/api/machines', authCheck, require('./routes/MachineRouter'));
 
 // catch all 404 handler
 app.use((req,res) => {
-    const response = new Response(404, 'Not Found', null, {error: 'Not Found'});
+    const response = new Response(404, 'Not Found', null, {error: 'Not Found', path: req.path});
     response.send(res);
 })
 

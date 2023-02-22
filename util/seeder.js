@@ -12,10 +12,16 @@ const testUsers = [
         role: 'user'
     },
     {
-        email: 'a@test.com',
-        password: 'admin',
+        email: 'admin',
+        password: '1',
         displayName: 'Test Admin',
         role: 'admin'
+    },
+    {
+        email: 'reset@test.com',
+        displayName: 'Test Rester',
+        password: '123',
+        role: 'user'
     }
 ]
 
@@ -64,7 +70,7 @@ async function seeder () {
             const newUser = new User(user);
             await newUser.save();
             Ids.users.push(newUser._id);
-    }   
+    }
 
     for(let machine of machines) {
         const test = await Machine.find({name: machine.name});

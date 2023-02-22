@@ -6,3 +6,6 @@ NODE_ENV=[development || production]
 MONGO_URI=mongodb://[ipaddres]:[port] - look up mongo connection URL for more info
 SESSION_SECRET=[something]
 BUILD_IN_ADMIN_PW=[something]
+RESET_LINK_TARGET= https://[URL]/reset/ - link that gets injected into reset emails - should be frontend address
+EMAIL_USER="" - user name for account sending emails
+EMAIL_PW="" - password for account sending emails

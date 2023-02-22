@@ -6,7 +6,7 @@ module.exports = function () {
     .then(users => {
         if(users.length === 0) {
             const user = new User({
-                email: 'admin',
+                email: 'admin@broadcastmed.com',
                 password: process.env.BUILD_IN_ADMIN_PW,
                 role: 'admin'
             });

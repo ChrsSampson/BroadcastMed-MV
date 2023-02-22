@@ -1,6 +1,4 @@
 // user crud router
-const express = require('express');
-const Response = require('../lib/Response');
 const asyncHandler = require('../lib/AsyncHandler');
 const {getAll, create, findById, deleteById, updateById, findMe} = require('../controllers/UserController');
 const { Router } = require('express');

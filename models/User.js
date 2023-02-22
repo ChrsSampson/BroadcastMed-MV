@@ -18,6 +18,16 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    resetToken: {
+        type: String,
+        required: false,
+        default: null
+    },
+    resetExpiry: {
+        type: Date,
+        required: false,
+        default: null
+    },
     role: {
         type: String,
         required: true,

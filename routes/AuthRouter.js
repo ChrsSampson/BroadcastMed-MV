@@ -1,10 +1,14 @@
 const express = require('express');
 const Response = require('../lib/Response');
 const asyncHandler = require('../lib/AsyncHandler');
+const {config} = require('dotenv');
 
 const router = express.Router();
 
-const  {login, logout, resetPassword} = require('../controllers/AuthController');
+const  {login, logout, resetPassword, beginReset, checkToken} = require('../controllers/AuthController');
+const {mailTester, sendResetEmail} = require('../lib/mailer');
+
+config();
 
 //  api/auth/login
 router.post('/login', asyncHandler( async (req,res, next) => {
@@ -46,14 +50,79 @@ router.post('/logout', asyncHandler( async (req,res, next) => {
     }
 }));
 
-// gets the currently logged in user
-router.get('/me', asyncHandler( async (req,res, next) => {
-    res.send('Not Implemented');
+
+//---------------------------------
+// User Self Service Password Reset
+//---------------------------------
+
+// begin the password reset
+// api/auth/reset
+router.post('/reset', asyncHandler( async (req,res, next) => {
+    try{
+        const {email} = req.body;
+
+        if(!email) {
+            const response = new Response(400, 'Email required', null, {error: 'Email required'});
+            response.send(res);
+            return;
+        }
+
+        const result = await beginReset(email);
+        
+         // reset email should be send here after the user has been updated with reset token
+         if(process.env.NODE_ENV === 'production') {
+            await sendResetEmail(result.emailInfo);
+        } else {
+            // sends a test email to ethereal.email, credentials will be in terminal
+            // await mailTester(result.emailInfo);
+            await sendResetEmail(result.emailInfo);
+        }
+
+        const response = new Response(200, 'Password Reset Initiated', {...result.userInfo}, null);
+        response.send(res);
+
+    } catch (err) {
+        throw err
+    }
+}));
+
+// check the token and reset the password
+router.get('/reset/:userId/:token', asyncHandler( async (req,res, next) => {
+    const {userId, token} = req.params;
+
+    try{
+        const result = await checkToken(userId, token);
+        const response = new Response(200, 'Password Reset Confirmed', result, null);
+        response.send(res)
+    } catch (err) {
+        throw err
+    }
+}));
+
+// reset the users password
+router.post('/reset/:userId/:token', asyncHandler( async (req,res, next) => {
+    const {userId, token} = req.params;
+    const {password} = req.body;
+
+    if(!password) {
+        const response = new Response(400, 'Password required', null, {error: 'Password required'});
+        response.send(res);
+        return;
+    }
+
+    try{
+        const result = await resetPassword(userId, token, password);
+
+        const response = new Response(200, 'Password Reset Successful', result, null);
+        response.send(res)
+    } catch (err) {
+        throw err
+    }
 }));
 
 // router 404 handler
 router.use((req,res) => {
-    const response = new Response(404, 'Method Not Supported', null, {error: 'Method Not Supported'});
+    const response = new Response(404, 'Method Not Supported', null, {error: 'Method Not Supported', path: req.url, method: req.method});
     response.send(res);
 });
 
