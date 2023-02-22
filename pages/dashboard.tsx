@@ -1,10 +1,11 @@
 // Admin Dashboard Page
 import { useState, useEffect } from "react";
-import {Box, TextField, Button, Tab, Tabs} from '@mui/material'
+import {Box, Container, Button} from '@mui/material'
 import { Typography } from "@mui/material";
 import CreateWidget from "@/components/CreateWidget";
 import EditWidget from "@/components/EditWidget";
 import EditForm from "@/components/EditForm";
+import NavBar from "@/components/NavBar";
 import Image from "next/image";
 
 import axios from "axios";
@@ -41,7 +42,7 @@ export async function getServerSideProps(ctx: any) {
     }
 }
 
-export default function () {
+export default function (props: any) {
     const [tab, setTab] = useState<Number>(0);
     const [open, setOpen] = useState(false);
     const [modalData, SetModalData] = useState<any>(null);
@@ -50,12 +51,11 @@ export default function () {
     const [machines, setMachines] = useState<Array<any>>([]);
     const [users, setUsers] = useState<Array<any>>([]);
     const [error, setError] = useState<String>('');
-    const [search, setSearch] = useState<String>('');
 
 
     useEffect(() => {
         populateState();
-    }, [])
+    }, [users, machines])
 
     // get all machines and all users and mount them in state
     async function populateState () {
@@ -94,37 +94,21 @@ export default function () {
     return (
         <Box
             sx={{
-                padding: '1em',
                 height: '100vh'
             }}
         >
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-            }}>
-                <Box sx={{
-                    display: 'flex',
-                    alignContent: 'center',
-                    height: '50px',
-                    margin: '1em',
+            <NavBar user={props.user} title="Dashboard" />
+            <Container
+                maxWidth="lg"
+                sx={{
+                    width: '100%',
+                    display: 'grid',
+                    gridTemplateColumns: '.5fr auto',
+                    maxWidth: '1600px',
+                    paddingTop: '1em',
                     gap: '1em'
-                }}>
-                    <a href="/app">
-                        <Image alt="Logo" src="/icon.ico" height={50} width={50} />
-                    </a>
-                    <Typography variant="h4" component="h1" sx={{paddingBottom: '1em', color: 'black'}}>Dashboard</Typography>
-                </Box>
-                <Button size="large" href="/app">Back</Button>
-            </Box>
-            <Box sx={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                gap: '1em'
-            }}>
+                }}
+            >
                 <CreateWidget />
                 <EditWidget
                     openModal={openModal}
@@ -134,11 +118,9 @@ export default function () {
                     users={users}
                     loading={loading}
                     error={error}
-                    search={search}
-                    setSearch={setSearch}
                 />
                 {open ? <EditForm data={modalData} open={open} closeModal={closeModal} mode={tab} refresh={refreshList} /> : null}
-            </Box>
+            </Container>
         </Box>
     )
 }

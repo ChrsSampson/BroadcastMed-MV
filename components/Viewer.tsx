@@ -4,7 +4,10 @@ import {useEffect, useState} from 'react';
 import {Box, Button, TextField, Typography} from '@mui/material';
 import Frame from "@/components/Frame";
 
-export default function Viewer({selectedEncoders, removeEncoder} : {selectedEncoders: Object[], removeEncoder: Function} ) {
+export default function Viewer(
+    {selectedEncoders, removeEncoder, clearViewer} : 
+    {selectedEncoders: Object[], removeEncoder: Function, clearViewer: Function}
+    ) {
 
     const [machines, setMachines] = useState([]);
     // number of columns in the grid
@@ -37,15 +40,16 @@ export default function Viewer({selectedEncoders, removeEncoder} : {selectedEnco
                     padding: '0 .25rem',
                     border: '1px solid lightgrey',
                     borderRadius: '5px',
-                    maxWidth: '22rem',
+                    maxWidth: '21.3rem',
                     gap: '.5rem'
                 }}
             >
-                <Typography variant="overline">Layout</Typography>
+                <Typography>Layout</Typography>
                 <Button variant={layout === 1 ? 'outlined' : 'text'} onClick={() => setLayout(1)}>1</Button>
                 <Button variant={layout === 2 ? 'outlined' : 'text'} onClick={() => setLayout(2)}>2</Button>
                 <Button variant={layout === 3 ? 'outlined' : 'text'} onClick={() => setLayout(3)}>3</Button>
                 <Button variant={layout === 4 ? 'outlined' : 'text'} onClick={() => setLayout(4)}>4</Button>
+                <Button variant='contained' color="error" onClick={() => clearViewer()}>Clear</Button>
             </Box>
 
             <Box

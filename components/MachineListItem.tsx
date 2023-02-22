@@ -23,7 +23,7 @@ export default function ({item, onClick}: {item: any, onClick: Function}) {
         }}
         >
             <Typography style={{color: 'black'}} variant="h5" component="h1">
-                {item.name}
+                {item.tag} {item.name}
             </Typography>
             <Box sx={{
                 display: 'flex',

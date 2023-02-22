@@ -1,6 +1,6 @@
 // navigation bar
 import UserBug from "./UserBug";
-import { Button, Box, Typography, AppBar, IconButton, Toolbar, Tooltip } from "@mui/material";
+import { Button, Box, Typography, AppBar, IconButton, Toolbar, Tooltip, Link } from "@mui/material";
 import Image from "next/image";
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 
@@ -35,16 +35,20 @@ export default function (props: any) {
                     alignItems: 'center',
                     gap: '1rem',
                 }}>
-                    <Tooltip title="Open Menu">
-                        <IconButton
-                            onClick={() => props.openDrawer()}
-                            size="small"
-                        >
-                            <MenuOpenIcon/>
-                        </IconButton>
-                    </Tooltip>
-                    <Image alt="logo" src="/icon.ico" width={40} height={40} />
-                    <Typography variant="h6" component="h1" sx={{}}>Multiviewer</Typography>
+                    { props.openDrawer &&
+                        <Tooltip title="Open Menu">
+                            <IconButton
+                                onClick={() => props.openDrawer()}
+                                size="small"
+                            >
+                                <MenuOpenIcon/>
+                            </IconButton>
+                        </Tooltip>
+                    }
+                    <Link href="/app">
+                        <Image alt="logo" src="/icon.ico" style={{border: '1px solid white', borderRadius: '.5em'}} width={40} height={40} />
+                    </Link>
+                    <Typography variant="h6" component="h1" sx={{}}>{ props.title ? props.title : 'Multiviewer' }</Typography>
                 </Box>
                 <Box sx={{
                     display: 'flex',

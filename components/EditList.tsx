@@ -1,9 +1,7 @@
 // list of items to edit
-import {useState} from 'react'
-import {Box, TextField, Button, Typography} from '@mui/material'
+import {Box, Typography} from '@mui/material'
 import MachineListItem from '@/components/MachineListItem'
 import UserListItem from '@/components/UserListItem'
-import EditForm from '@/components/EditForm'
 
 export default function ({items, mode, openModal}: {items: any, mode: Number, openModal: Function}) {
 
@@ -14,11 +12,10 @@ export default function ({items, mode, openModal}: {items: any, mode: Number, op
             alignItems: 'center',
             justifyContent: 'center',
             width: '100%',
-            height: '100%',
             padding: '1em'
         }}>
             {
-                items ? items.map((item: any, index: number) => {
+                items.length ? items.map((item: any, index: number) => {
                     if(mode === 1) {
                         return (
                             MachineListItem({item, onClick: () => openModal(item, mode)})
@@ -28,9 +25,9 @@ export default function ({items, mode, openModal}: {items: any, mode: Number, op
                             UserListItem({user: item, onClick: () => openModal(item, mode)})
                         )
                     }
-                }
-                )
-                : null
+                })
+                : 
+                <Typography variant="subtitle1" component="h1" sx={{color: 'black'}}>No Matching Results</Typography>
             }
         </Box>
     )

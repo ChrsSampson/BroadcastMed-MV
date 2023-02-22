@@ -52,6 +52,7 @@ export default function LoginWidget({onSubmit}: {onSubmit: Function}) {
                 <Box sx={{
                     display: 'flex',
                     flexDirection: 'column',
+                    alignItems: 'center',
                     gap: '1rem',
                     color: 'black',
                     backgroundColor: 'white',
@@ -74,7 +75,13 @@ export default function LoginWidget({onSubmit}: {onSubmit: Function}) {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <Button variant='contained' type="submit" disabled={loading}>Login</Button>
+                <Button variant='contained' size="large" type="submit" disabled={loading}
+                    sx={{
+                        width: '100%'
+                    }}
+                >
+                    Login
+                </Button>
                 <Typography variant='h6'>
                     <Button>
                         <Link href="/forgot-password">

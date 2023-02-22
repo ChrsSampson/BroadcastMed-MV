@@ -82,6 +82,9 @@ export default function App(props: Props) {
         setSelectedEncoders(selectedEncoders.filter((encoder) => encoder._id !== id))
     }
 
+    function clearViewer () {
+        setSelectedEncoders([])
+    }
 
     async function getEncoders () {
         try{
@@ -119,7 +122,7 @@ export default function App(props: Props) {
             >
                 <ViewerSidebar toggleDrawer={toggleDrawer} addEncoder={addEncoder} laptops={laptops} radius={radius} desktops={desktops} enclosures={enclosures} />
             </Drawer>
-            <Viewer selectedEncoders={selectedEncoders} removeEncoder={removeEncoder} />
+            <Viewer selectedEncoders={selectedEncoders} removeEncoder={removeEncoder} clearViewer={clearViewer} />
             <Snackbar open={error ? true : false} autoHideDuration={6000} message={error} >
                 <Alert severity="error" variant="filled" sx={{ width: '100%' }} >
                     {error}
