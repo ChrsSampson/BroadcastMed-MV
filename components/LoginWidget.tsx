@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import axios from 'axios';
-import {Box, TextField, Button, Snackbar, Alert} from '@mui/material'
+import {Box, TextField, Button, Snackbar, Alert, Typography} from '@mui/material'
+import Link from 'next/link';
 import Image from 'next/image';
 
 
@@ -74,6 +75,13 @@ export default function LoginWidget({onSubmit}: {onSubmit: Function}) {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <Button variant='contained' type="submit" disabled={loading}>Login</Button>
+                <Typography variant='h6'>
+                    <Button>
+                        <Link href="/forgot-password">
+                            Forgot Password?
+                        </Link>
+                    </Button>
+                </Typography>
                 </Box>
             </form>
         </Box>
