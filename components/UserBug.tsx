@@ -1,6 +1,6 @@
 // user Bug
 
-import {Box, Button, Menu, Typography, Grow, Paper, IconButton, Tooltip, MenuItem, ListItemIcon} from '@mui/material'
+import {Box, Button, Menu, Typography, Grow, Paper, IconButton, Tooltip, MenuItem, ClickAwayListener} from '@mui/material'
 import {Fab} from '@mui/material'
 import {useRouter} from 'next/router'
 import {useState} from 'react'
@@ -65,55 +65,55 @@ export default function UserBug(props: Props) {
                 <AccountCircleIcon fontSize='medium' />
             </IconButton>
         </Tooltip>
-            <Menu 
-                open={!collapsed}
-                anchorEl={anchorEl}
-                PaperProps={{
-                    elevation: 0,
-                    sx: {
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '&:before': {
-                            content: '""',
-                            display: 'block',
-                            position: 'absolute',
-                            top: 0,
-                            right: 14,
-                            width: 10,
-                            height: 10,
-                            bgcolor: 'background.paper',
-                            transform: 'translateY(-50%) rotate(45deg)',
-                            zIndex: 0,
-                          }
-                    }
-                }}
-            >
-                <MenuItem>
-                    <PersonIcon />
-                    <Typography
-                        sx={{
-                            color: 'black',
-                        }}
-                    >
-                        {props.user.displayName ? props.user.displayName : props.user.email}
-                    </Typography>
-                </MenuItem>
-                {
-                    props.user.role === 'admin' ?
-                    <MenuItem onClick={() => router.push('/dashboard')}>
-                        <DashboardIcon/> Dashboard
+                <Menu 
+                    open={!collapsed}
+                    anchorEl={anchorEl}
+                    PaperProps={{
+                        elevation: 0,
+                        sx: {
+                            overflow: 'visible',
+                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                            mt: 1.5,
+                            '&:before': {
+                                content: '""',
+                                display: 'block',
+                                position: 'absolute',
+                                top: 0,
+                                right: 14,
+                                width: 10,
+                                height: 10,
+                                bgcolor: 'background.paper',
+                                transform: 'translateY(-50%) rotate(45deg)',
+                                zIndex: 0,
+                            }
+                        }
+                    }}
+                >
+                    <MenuItem>
+                        <PersonIcon />
+                        <Typography
+                            sx={{
+                                color: 'black',
+                            }}
+                        >
+                            {props.user.displayName ? props.user.displayName : props.user.email}
+                        </Typography>
                     </MenuItem>
-                    :
-                    null
-                }
-                <MenuItem onClick={() => logout()}>
-                    <LogoutIcon /> Logout
-                </MenuItem>
-                <MenuItem onClick={() => setCollapsed(true)}>
-                    <CloseIcon /> Close Menu
-                </MenuItem>
-            </Menu>
+                    {
+                        props.user.role === 'admin' ?
+                        <MenuItem onClick={() => router.push('/dashboard')}>
+                            <DashboardIcon/> Dashboard
+                        </MenuItem>
+                        :
+                        null
+                    }
+                    <MenuItem onClick={() => logout()}>
+                        <LogoutIcon /> Logout
+                    </MenuItem>
+                    <MenuItem onClick={() => setCollapsed(true)}>
+                        <CloseIcon /> Close Menu
+                    </MenuItem>
+                </Menu>
         </>
     )
 }

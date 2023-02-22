@@ -94,7 +94,7 @@ export default function ({userId, token, propError}: {userId: string, token: str
             <form
                 style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
+                    gridTemplateColumns: 'auto 1fr',
                     borderRadius: '1.25rem',
                     border: '1px solid white',
                 }}
@@ -102,7 +102,8 @@ export default function ({userId, token, propError}: {userId: string, token: str
             >
                 <Box sx={{
                     display: 'grid',
-                    placeItems: 'center'
+                    placeItems: 'center',
+                    padding: '2em'
                 }}>
                     <Image priority src="/icon.ico" alt="logo" width={150} height={150} />
                 </Box>
@@ -129,6 +130,7 @@ export default function ({userId, token, propError}: {userId: string, token: str
                         variant='outlined'
                         label="New Password"
                         value={password}
+                        type="password"
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <TextField
@@ -136,9 +138,10 @@ export default function ({userId, token, propError}: {userId: string, token: str
                         variant='outlined'
                         label="Confirm Password"
                         value={confirmPassword}
+                        type="password"
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
-                    <Button variant='contained' type="submit" disabled={loading}>Verify Email</Button>
+                    <Button variant='contained' type="submit" disabled={loading}>Submit</Button>
                     <Typography variant='h6' align="center">
                         <Button>
                             <Link href="/login">

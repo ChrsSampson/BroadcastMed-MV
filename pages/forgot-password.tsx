@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/router"
-import { Box, TextField, Button, Snackbar, Alert, Typography } from "@mui/material";
+import { Box, TextField, Button, Snackbar, Alert, Typography, CircularProgress } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
@@ -16,15 +16,18 @@ export default function () {
 
     function handleSubmit(e: any) {
         e.preventDefault();
+        setLoading(true);
         axios.post(`/api/auth/reset`, {
             email
         })
         .then(res => {
             setMessage('Your account has been found, You will receive an email shortly.')
+            setLoading(false)
         })
         .catch(err => {
             console.log(err);
             setError('Invalid Email')
+            setLoading(false)
         })
     }
 
@@ -41,15 +44,17 @@ export default function () {
             <form
                 style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
+                    gridTemplateColumns: 'auto 1fr',
                     borderRadius: '1.25rem',
                     border: '1px solid white',
                 }}
                 onSubmit={(e) => handleSubmit(e)}
             >
                 <Box sx={{
-                    display: 'grid',
-                    placeItems: 'center'
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '2em',
                 }}>
                     <Image priority src="/icon.ico" alt="logo" width={150} height={150} />
                 </Box>
@@ -78,7 +83,18 @@ export default function () {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                    <Button variant='contained' type="submit" disabled={loading}>Verify Email</Button>
+                    {
+                        loading ? 
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                width: '100%',
+                            }}>
+                                <CircularProgress  />
+                            </Box>
+                        : 
+                            <Button variant='contained' type="submit" disabled={loading}>Send Reset Email</Button>
+                    }
                     <Typography variant='h6' align="center">
                         <Button>
                             <Link href="/login">

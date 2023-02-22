@@ -1,6 +1,5 @@
 import {Box, Tab, Tabs, Typography, Backdrop, CircularProgress, TextField} from '@mui/material'
 import {useState, useEffect} from 'react'
-import axios from 'axios'
 import EditList from '@/components/EditList'
 
 export default function EditWidget (
@@ -11,8 +10,6 @@ export default function EditWidget (
         machines,
         users,
         error,
-        search,
-        setSearch,
         loading
     } 
     :
@@ -23,20 +20,68 @@ export default function EditWidget (
         machines: Array<any>,
         users: Array<any>,
         error: String,
-        search: String,
-        setSearch: Function
         loading: boolean
     }
     ) {
 
+        const [search, setSearch] = useState<string>('');
+        const [filteredMachines, setFilteredMachines] = useState<Array<any>>([...machines]);
+        const [filteredUsers, setFilteredUsers] = useState<Array<any>>([...users]);
+
+        useEffect(() => {
+            clearSearch();
+        }, [])
+
+        function changeTab(e: React.SyntheticEvent, value: number) {
+            clearSearch();
+            handleTabChange(e, value);
+        }
+
+        function clearSearch () {
+            setSearch('');
+            setFilteredMachines([...machines]);
+            setFilteredUsers([...users]);
+        }
+
+        function handleSearch (value: string) {
+            setSearch(value);
+
+            // filter machines
+            if(tab) {
+                if(!value) {
+                    setFilteredMachines(machines);
+                    return;
+                }
+
+                const filteredMachines = machines.filter((machine: any) => {
+                    return machine.name.toLowerCase().includes(value.toLowerCase());
+                });
+
+                setFilteredMachines(filteredMachines);
+            } else {
+                if(!value) {
+                    setFilteredUsers(users);
+                    return;
+                }
+
+                const filteredUsers = users.filter((user: any) => {
+                    return user.displayName.toLowerCase().includes(value.toLowerCase());
+                });
+
+                setFilteredUsers(filteredUsers);
+            }
+        }    
+        
 
     return (
         <Box sx={{
             border: '1px solid black',
             borderRadius: '1rem',
             padding: '1rem',
-            minWidth: '50rem',
-            maxWidth: '70rem'
+            minWidth: '31rem',
+            maxWidth: '70rem',
+            maxHeight: '90vh',
+            overflow: 'scroll',
         }}>
             <Box sx={{
                 display: 'flex',
@@ -46,7 +91,7 @@ export default function EditWidget (
                 <Typography style={{color: 'black'}} variant="h4" component="h1">
                     Edit
                 </Typography>
-                <TextField placeholder="Search" onChange={(e) => setSearch(e.target.value)} />
+                <TextField placeholder="Filter" value={search} onChange={(e) => handleSearch(e.target.value)} />
             </Box>
             {error ? <Typography style={{color: 'red'}} variant="h5" component="h1">{error}</Typography> : null}
             <Box
@@ -57,15 +102,13 @@ export default function EditWidget (
                 <Tabs
                     value={tab}
                     indicatorColor="primary"
-                    onChange={handleTabChange}
+                    onChange={changeTab}
                 >
                     <Tab value={0} label="Users" />
                     <Tab value={1} label="Encoders" />
                 </Tabs>
             </Box>
-            <Box>
-                    <EditList openModal={openModal} mode={tab} items={tab === 0 ? users : machines} />
-            </Box>
+            <EditList openModal={openModal} mode={tab} items={tab === 0 ? filteredUsers : filteredMachines} />
         </Box>
     )
 }

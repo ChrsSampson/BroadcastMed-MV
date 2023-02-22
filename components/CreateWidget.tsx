@@ -16,7 +16,9 @@ export default function () {
             borderRadius: '1rem',
             padding: '1rem',
             minWidth: '30rem',
-            maxWidth: '60rem'
+            maxWidth: '60rem',
+            maxHeight: '34.5rem',
+            minHeight: 'auto'
         }}>
         <Typography variant="h4" component="h1" sx={{paddingBottom: '1em', color: 'black'}}>Create</Typography>
         <Box
