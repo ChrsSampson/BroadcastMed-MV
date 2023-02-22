@@ -6,6 +6,7 @@ import { Box, TextField, Button, Snackbar, Alert, Typography, CircularProgress }
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
+import Head from "next/head";
 
 export default function () {
 
@@ -32,6 +33,13 @@ export default function () {
     }
 
     return (
+        <>
+        <Head>
+            <title>BroadcastMed x Pingplotter MultiViewer | Forgot Password</title>
+            <meta name="description" content="MultiViewer Forgot Password" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="icon" href="/icon.ico" />
+        </Head>
         <Box 
             sx={{
                 display: 'grid',
@@ -111,5 +119,6 @@ export default function () {
                 </Alert>
             </Snackbar>
         </Box>
+        </>
     )
 }
