@@ -4,14 +4,12 @@ import {useState} from "react" ;
 import axios from  "axios" ;
 import Image from "next/image";
 import Link from "next/link";
-
+import Head from "next/head";
 
 export async function getServerSideProps(context: any) {
     // get the userId and token from the url params
 
     const [userId, token] = context.params.params;
-
-
 
 
     // check if itd and token are in params
@@ -82,6 +80,13 @@ export default function ({userId, token, propError}: {userId: string, token: str
     }
 
     return (
+        <>
+        <Head>
+            <title>BroadcastMed x Pingplotter MultiViewer | Forgot Password</title>
+            <meta name="description" content="MultiViewer Forgot Password" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="icon" href="/icon.ico" />
+        </Head>
         <Box 
             sx={{
                 display: 'grid',
@@ -158,5 +163,6 @@ export default function ({userId, token, propError}: {userId: string, token: str
                 </Alert>
             </Snackbar>
         </Box>
+        </>
     )
 }

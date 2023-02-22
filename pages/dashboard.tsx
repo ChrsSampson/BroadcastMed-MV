@@ -6,7 +6,7 @@ import CreateWidget from "@/components/CreateWidget";
 import EditWidget from "@/components/EditWidget";
 import EditForm from "@/components/EditForm";
 import NavBar from "@/components/NavBar";
-import Image from "next/image";
+import Head from "next/head";
 
 import axios from "axios";
 import cookies from 'next-cookies'
@@ -92,6 +92,13 @@ export default function (props: any) {
     }
 
     return (
+        <>
+        <Head>
+            <title>BroadcastMed x Pingplotter MultiViewer | Dashboard</title>
+            <meta name="description" content="MultiViewer Dashboard" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="icon" href="/icon.ico" />
+        </Head>
         <Box
             sx={{
                 height: '100vh'
@@ -122,5 +129,6 @@ export default function (props: any) {
                 {open ? <EditForm data={modalData} open={open} closeModal={closeModal} mode={tab} refresh={refreshList} /> : null}
             </Container>
         </Box>
+        </>
     )
 }
