@@ -26,6 +26,7 @@ app.get('/test', (req,res) => {
 app.use('/api/auth', require('./routes/AuthRouter'));
 app.use('/api/users', authCheck, require('./routes/UserRouter'));
 app.use('/api/machines', authCheck, require('./routes/MachineRouter'));
+app.use('/api/issues', authCheck, require('./routes/IssueRouter'));
 
 // catch all 404 handler
 app.use((req,res) => {

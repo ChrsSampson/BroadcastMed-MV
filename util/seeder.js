@@ -1,7 +1,8 @@
-// utility for planting data into the database
+// utility for planting data into the database for testing
 
 const User = require('../models/User');
 const Machine = require('../models/Machine');
+const Issue = require('../models/Issue');
 const mongoose = require('mongoose');
 
 const testUsers = [
@@ -48,6 +49,21 @@ const testMachines = [
     }
 ]
 
+const testIssues = [
+    {
+        issue: 'Expired Link',
+        description: 'This link is expired',
+    },
+    {
+        issue: 'Incorrect Info',
+        description: 'Wrong name',
+    },
+    {
+        issue: 'Other',
+        description: 'Entire screen is green',
+    }
+]
+
 
 async function seeder () {
 
@@ -60,7 +76,8 @@ async function seeder () {
 
     const Ids = {
         users: [],
-        machines: []
+        machines: [],
+        issues: []
     }
     try{
 
@@ -78,6 +95,22 @@ async function seeder () {
             const newMachine = new Machine(machine);
             await newMachine.save();
             Ids.machines.push(newMachine._id);
+    }
+
+    for(let issue of testIssues) {
+        // get random userId and machineId from ids
+        const userId = Ids.users[0]
+        const machineId = Ids.machines[Math.floor(Math.random() * Ids.machines.length)];
+
+        const newIssue = new Issue({
+            machine: machineId,
+            user: userId,
+            issue: issue.issue,
+            description: issue.description
+        });
+
+        const r = await newIssue.save();
+        Ids.issues.push(r._id);
     }
 
     return Ids;
