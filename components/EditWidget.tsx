@@ -1,46 +1,62 @@
-import {Box, Tab, Tabs, Typography, Backdrop, CircularProgress, TextField} from '@mui/material'
+import {Box, Tab, Tabs, Typography, Backdrop, CircularProgress, TextField, Paper} from '@mui/material'
 import {useState, useEffect} from 'react'
 import EditList from '@/components/EditList'
+import EditForm from '@/components/EditForm'
+import axios from 'axios';
+import { Refresh } from '@mui/icons-material';
 
-export default function EditWidget (
-    {
-        openModal,
-        handleTabChange,
-        tab,
-        machines,
-        users,
-        error,
-        loading
-    } 
-    :
-    {
-        openModal: Function,
-        handleTabChange: (e: React.SyntheticEvent, value: number) => void,
-        tab: Number,
-        machines: Array<any>,
-        users: Array<any>,
-        error: String,
-        loading: boolean
-    }
-    ) {
 
+// ---------------Warning: Dumper fire----------------
+export default function EditWidget () {
+
+        const [machines, setMachines] = useState<Array<any>>([]);
+        const [users, setUsers] = useState<Array<any>>([]);
+        const [loading, setLoading] = useState<boolean>(false);
+        const [error, setError] = useState<String>('');
         const [search, setSearch] = useState<string>('');
         const [filteredMachines, setFilteredMachines] = useState<Array<any>>([...machines]);
         const [filteredUsers, setFilteredUsers] = useState<Array<any>>([...users]);
+        const [open, setOpen] = useState(false);
+        const [modalData, setModalData] = useState<any>(null);
+        const [tab, setTab] = useState<Number>(0);
 
-        useEffect(() => {
-            clearSearch();
-        }, [])
+        async function requestData () {
+            try{
+                const machines = axios.get('/api/machines');
+                const users = axios.get('/api/users');
+                
+                setUsers( (await users).data.data);
+                setMachines( (await machines).data.data);
+
+            } catch (err: any) {
+                console.log('Error', err.data);
+                setError(err.data);
+            }
+        }  
+
+        function openModal (data: any) {
+            setModalData(data);
+            setOpen(true);
+        }
+
+        function closeModal () {
+            setOpen(false);
+            setModalData(null);
+        }
 
         function changeTab(e: React.SyntheticEvent, value: number) {
             clearSearch();
-            handleTabChange(e, value);
+            setTab(value);
         }
 
         function clearSearch () {
             setSearch('');
             setFilteredMachines([...machines]);
             setFilteredUsers([...users]);
+        }
+
+        function refresh () {
+            clearSearch();
         }
 
         function handleSearch (value: string) {
@@ -73,42 +89,96 @@ export default function EditWidget (
         }    
         
 
+        function doListShit () {
+            if(tab) {
+                return (
+                    <EditList
+                        items={filteredMachines}
+                        mode={1}
+                        openModal={openModal}
+                    />
+                )
+            } else {
+                return (
+                    <EditList
+                        items={filteredUsers}
+                        mode={0}
+                        openModal={openModal}
+                    />
+                )
+            }
+        }
+
+        useEffect( () => {
+            try{
+                setLoading(true); 
+
+                requestData()
+                    .then(() => {
+                        setLoading(false);
+                    })
+            } catch (err: any) {
+                console.log('Error', err);
+                setError(err);
+                setLoading(false);
+            }
+        }, []);
+
+        useEffect( () => {
+            refresh();
+        }, [users, machines])    
+
     return (
-        <Box sx={{
-            border: '1px solid black',
-            borderRadius: '1rem',
-            padding: '1rem',
-            minWidth: '31rem',
-            maxWidth: '70rem',
-            maxHeight: '90vh',
-            overflow: 'scroll',
-        }}>
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-            }}>
-                <Typography style={{color: 'black'}} variant="h4" component="h1">
-                    Edit
-                </Typography>
-                <TextField placeholder="Filter" value={search} onChange={(e) => handleSearch(e.target.value)} />
-            </Box>
-            {error ? <Typography style={{color: 'red'}} variant="h5" component="h1">{error}</Typography> : null}
-            <Box
+        <>
+            <Paper 
                 sx={{
-                    paddingBottom: '1em'
+                    borderRadius: '1rem',
+                    padding: '1rem',
+                    minWidth: '31rem',
+                    maxWidth: '70rem',
+                    maxHeight: '90vh',
+                    overflowY: 'scroll',
                 }}
+                elevation={3}
             >
-                <Tabs
-                    value={tab}
-                    indicatorColor="primary"
-                    onChange={changeTab}
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                }}>
+                    <Typography style={{color: 'black'}} variant="h4" component="h1">
+                        Edit
+                    </Typography>
+                    <TextField placeholder="Filter" value={search} onChange={(e) => handleSearch(e.target.value)} />
+                </Box>
+                {error ? <Typography style={{color: 'red'}} variant="h5" component="h1">{error}</Typography> : null}
+                <Box
+                    sx={{
+                        paddingBottom: '1em'
+                    }}
                 >
-                    <Tab value={0} label="Users" />
-                    <Tab value={1} label="Encoders" />
-                </Tabs>
-            </Box>
-            <EditList openModal={openModal} mode={tab} items={tab === 0 ? filteredUsers : filteredMachines} />
-        </Box>
+                    <Tabs
+                        value={tab}
+                        indicatorColor="primary"
+                        onChange={changeTab}
+                    >
+                        <Tab value={0} label="Users" />
+                        <Tab value={1} label="Encoders" />
+                    </Tabs>
+                </Box>
+                {loading ?
+                    <Box sx={{
+                        display: 'grid',
+                        placeItems: 'center',
+                        height: '70%',
+                    }}>
+                        <CircularProgress size={90} color="primary" />
+                    </Box>
+                    :
+                    doListShit()
+                }
+            </Paper>
+            {open ? <EditForm data={modalData} open={open} closeModal={closeModal} mode={tab} refresh={refresh} /> : null}
+        </>
     )
 }

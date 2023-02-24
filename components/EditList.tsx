@@ -15,14 +15,16 @@ export default function ({items, mode, openModal}: {items: any, mode: Number, op
             padding: '1em'
         }}>
             {
-                items.length ? items.map((item: any, index: number) => {
+                items && items.length ? items.map((item: any, index: number) => {
+                    // display machines
                     if(mode === 1) {
                         return (
-                            MachineListItem({item, onClick: () => openModal(item, mode)})
+                            MachineListItem({item, onClick: () => openModal(item, mode), index})
                         )
                     } else {
+                        // display users
                         return (
-                            UserListItem({user: item, onClick: () => openModal(item, mode)})
+                            UserListItem({user: item, onClick: () => openModal(item, mode), index})
                         )
                     }
                 })

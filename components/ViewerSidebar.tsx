@@ -9,14 +9,14 @@ export default function ({toggleDrawer, addEncoder, laptops, radius, desktops, e
                 width: '30em',
                 height: '100vh'
             }}
-            onMouseLeave={toggleDrawer}
+            onMouseLeave={() => toggleDrawer()}
         >
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'flex-end',
                 padding: '1rem'
             }}>
-                <Button color="error" variant="contained" onClick={toggleDrawer}>
+                <Button color="error" variant="contained" onClick={() => toggleDrawer()}>
                     <CloseIcon />
                 </Button>
             </Box>

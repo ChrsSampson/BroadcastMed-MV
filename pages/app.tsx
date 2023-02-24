@@ -62,7 +62,7 @@ export default function App(props: Props) {
     const [radius, setRadius] = useState<string[]>([])
     const [desktops, setDesktops] = useState<string[]>([])
     const [enclosures, setEnclousures] = useState<string[]>([])
-    const [openDrawer, setOpenDrawer] = useState<boolean>(false)
+    const [showDrawer, setShowDrawer] = useState<boolean>(false)
     const [selectedEncoders, setSelectedEncoders] = useState<Array<Encoder> >([])
     const [error, setError] = useState<string>('')
 
@@ -70,8 +70,12 @@ export default function App(props: Props) {
         getEncoders()
     }, [])
 
-    function toggleDrawer() {
-        setOpenDrawer(!openDrawer)
+    function closeDrawer() {
+        setShowDrawer(false)
+    }
+
+    function openDrawer() {
+        setShowDrawer(true)
     }
 
     function addEncoder (data: Encoder) {
@@ -115,12 +119,12 @@ export default function App(props: Props) {
                 color: 'black'
             }}
         >
-            <NavBar user={props.user} openDrawer={toggleDrawer} />
+            <NavBar user={props.user} openDrawer={openDrawer} />
             <Drawer
                 anchor="left"
-                open={openDrawer}
+                open={showDrawer}
             >
-                <ViewerSidebar toggleDrawer={toggleDrawer} addEncoder={addEncoder} laptops={laptops} radius={radius} desktops={desktops} enclosures={enclosures} />
+                <ViewerSidebar toggleDrawer={closeDrawer} addEncoder={addEncoder} laptops={laptops} radius={radius} desktops={desktops} enclosures={enclosures} />
             </Drawer>
             <Viewer selectedEncoders={selectedEncoders} removeEncoder={removeEncoder} clearViewer={clearViewer} />
             <Snackbar open={error ? true : false} autoHideDuration={6000} message={error} >

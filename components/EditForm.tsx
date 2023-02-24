@@ -1,5 +1,5 @@
 // edit form component
-import {Box, TextField, Button, Typography, Modal, Select, MenuItem, Switch, FormControlLabel, Toolbar, Dialog, DialogTitle, DialogContent} from '@mui/material';
+import {Box, TextField, Button, Typography, Modal, Select, MenuItem, Switch, FormControlLabel, Toolbar, Dialog, DialogTitle, DialogContent, Paper} from '@mui/material';
 import {useState} from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios'
@@ -107,10 +107,9 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
                 height: '100%',
                 padding: '1em'
             }}>
-                <Box
+                <Paper
                     sx={{
                         bgcolor: 'background.paper',
-                        border: '2px solid #000',
                         borderRadius: '1em',
                         padding: '1em',
                         boxShadow: 24,
@@ -118,6 +117,7 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
                         flexDirection: 'column',
                         width: '50%',
                     }}
+                    elevation={5}
                 >
                     <Toolbar
                         sx ={{
@@ -207,6 +207,7 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
                         <DialogContent
                             sx={{
                                 display: 'flex',
+                                justifyContent: 'space-around',
                                 gap: '1em',
                             }}
                         >
@@ -225,7 +226,7 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
                             </Button>
                         </DialogContent>
                     </Dialog>
-                </Box>
+                </Paper>
             </Box>
         </Modal>
     )

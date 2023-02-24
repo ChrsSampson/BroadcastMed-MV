@@ -6,7 +6,7 @@ import {Box, Button, TextField, Switch, FormGroup, FormControlLabel, Select, Men
 import axios from 'axios';
 
 
-export default function ({mode}: {mode: Number}) {
+export default function ({mode, setAlert}: {mode: number, setAlert: (msg: string, sev: string) => void}) {
 
     const [email, setEmail] = useState<String>('');
     const [password, setPassword] = useState<String>('');
@@ -18,7 +18,7 @@ export default function ({mode}: {mode: Number}) {
     const [link, setLink] = useState<String>('');
     const [category, setCategory] = useState<String>('');
 
-    const handleUserSubmit = (e: any) => {
+    function handleUserSubmit (e: any) {
         e.preventDefault();
 
         if(password !== confirmPassword) return alert('Passwords do not match!')
@@ -34,10 +34,11 @@ export default function ({mode}: {mode: Number}) {
             setPassword('')
             setDisplayName('')
             setRole(false)
-            alert(res.data.message)
+            setAlert('User Created', 'success')
         })
         .catch(err => {
             console.log(err);
+            setAlert('Something went wrong', 'error')
         });
     }
 
