@@ -111,11 +111,10 @@ export default function ({data, open, mode, closeModal, refresh} : {data: any, m
                     sx={{
                         bgcolor: 'background.paper',
                         borderRadius: '1em',
-                        padding: '1em',
-                        boxShadow: 24,
+                        padding: '1em', 
                         display: 'flex',
                         flexDirection: 'column',
-                        width: '50%',
+                        width: '50%'
                     }}
                     elevation={5}
                 >

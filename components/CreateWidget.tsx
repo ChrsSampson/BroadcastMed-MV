@@ -3,10 +3,10 @@ import {useState} from 'react'
 import CreateForm from '@/components/CreateForm'
 import { Typography, Paper } from "@mui/material";
 
-export default function (setAlert: (msg: string, sev: string) => void ) {
-    const [tab, setTab] = useState<Number>(0);
+export default function (setAlert: any) {
+    const [tab, setTab] = useState<number>(0);
 
-    function handleChange (e: React.SyntheticEvent, value: Number) {
+    function handleChange (e: React.SyntheticEvent, value: number) {
         setTab(value);
     }
 

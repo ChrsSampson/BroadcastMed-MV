@@ -1,18 +1,21 @@
 // components to display frames selected by the user
 
 import {useEffect, useState} from 'react';
-import {Box, Button, TextField, Typography} from '@mui/material';
+import {Box, Button, TextField, Typography, Paper} from '@mui/material';
 import Frame from "@/components/Frame";
+import IssueForm from './IssueForm';
 
 export default function Viewer(
-    {selectedEncoders, removeEncoder, clearViewer} : 
-    {selectedEncoders: Object[], removeEncoder: Function, clearViewer: Function}
+    {selectedEncoders, removeEncoder, clearViewer, user, setAlert} : 
+    {selectedEncoders: Object[], removeEncoder: Function, clearViewer: Function, user: Object, setAlert: Function}
     ) {
 
     const [machines, setMachines] = useState([]);
     // number of columns in the grid
     const [layout, setLayout] = useState<Number>(1);
 
+    const [openIssue, setOpenIssue] = useState<boolean>(false);
+    const [issueData, setIssueData] = useState<any>({});
 
     function getColumns () {
         let columns = ''
@@ -24,6 +27,15 @@ export default function Viewer(
         return columns
     }
 
+    function handleOpenIssue(encoder: object) {
+        setIssueData(encoder)
+        setOpenIssue(true)
+    }
+
+    function handleCloseIssue() {
+        setOpenIssue(false)
+        setIssueData({})
+    }
 
     return (
         <Box
@@ -32,9 +44,10 @@ export default function Viewer(
                 flexDirection: 'column'
             }}
         >
-            <Box
+            <Paper
                 sx={{
                     display: 'flex',
+                    backgroundColor: 'white',
                     alignItems: 'center',
                     margin: '.5rem',
                     padding: '0 .25rem',
@@ -43,6 +56,7 @@ export default function Viewer(
                     maxWidth: '21.3rem',
                     gap: '.5rem'
                 }}
+                elevation={3}
             >
                 <Typography>Layout</Typography>
                 <Button variant={layout === 1 ? 'outlined' : 'text'} onClick={() => setLayout(1)}>1</Button>
@@ -50,7 +64,7 @@ export default function Viewer(
                 <Button variant={layout === 3 ? 'outlined' : 'text'} onClick={() => setLayout(3)}>3</Button>
                 <Button variant={layout === 4 ? 'outlined' : 'text'} onClick={() => setLayout(4)}>4</Button>
                 <Button variant='contained' color="error" onClick={() => clearViewer()}>Clear</Button>
-            </Box>
+            </Paper>
 
             <Box
                 sx={{
@@ -60,11 +74,11 @@ export default function Viewer(
             >
                 {
                     selectedEncoders.length ? selectedEncoders.map((encoder: any) => {
-                        return <Frame encoder={encoder} removeEncoder={removeEncoder} />
+                        return <Frame encoder={encoder} removeEncoder={removeEncoder} handleOpenIssue={handleOpenIssue} />
                     }) : null
                 }
             </Box>
-
+            <IssueForm open={openIssue} encoder={issueData} close={handleCloseIssue} setAlert={setAlert} />
         </Box>
     )
 }

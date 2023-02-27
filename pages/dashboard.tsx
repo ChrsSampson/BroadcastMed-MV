@@ -46,7 +46,7 @@ export async function getServerSideProps(ctx: any) {
 }
 
 export default function (props: any) {
-    const [tab, setTab] = useState<Number>(0);
+    const [tab, setTab] = useState<number>(0);
     const [open, setOpen] = useState(false);
 
     const [issues, setIssues] = useState<Array<any>>([]);
@@ -54,11 +54,11 @@ export default function (props: any) {
     const [message, setMessage] = useState<string>('');
     const [severity, setSeverity] = useState< 'success' | 'error' | 'warning' >('success');
 
-    function handleChange (e: React.SyntheticEvent, value: Number) {
+    function handleChange (e: React.SyntheticEvent, value: number) {
         setTab(value);
     }
 
-    function setAlert (message:string , severity: 'success' | 'error' | 'warning' ) {
+    function setAlert (message: string, severity: 'success' | 'error' | 'warning') {
         setMessage(message);
         setSeverity(severity);
         setOpen(true);
@@ -74,7 +74,12 @@ export default function (props: any) {
         </Head>
         <Box
             sx={{
-                height: '100vh'
+                minHeight: '100vh',
+                backgroundImage: 'url(/Wave.svg)',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                backgroundAttachment: 'fixed',
             }}
         >
             <NavBar user={props.user} title="Dashboard" />

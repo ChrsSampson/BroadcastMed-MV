@@ -2,11 +2,11 @@
 
 
 import { useState, useEffect } from "react";
-import {Box, Button, TextField, Switch, FormGroup, FormControlLabel, Select, MenuItem} from '@mui/material';
+import {Box, Button, TextField, Switch, FormControlLabel, Select, MenuItem} from '@mui/material';
 import axios from 'axios';
 
 
-export default function ({mode, setAlert}: {mode: number, setAlert: (msg: string, sev: string) => void}) {
+export default function ({mode, setAlert}: {mode: number, setAlert: any}) {
 
     const [email, setEmail] = useState<String>('');
     const [password, setPassword] = useState<String>('');
