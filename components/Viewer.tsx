@@ -5,9 +5,16 @@ import {Box, Button, TextField, Typography, Paper} from '@mui/material';
 import Frame from "@/components/Frame";
 import IssueForm from './IssueForm';
 
+
+interface UserProps {
+    _id: string,
+    email: string,
+    displayName: string
+}
+
 export default function Viewer(
     {selectedEncoders, removeEncoder, clearViewer, user, setAlert} : 
-    {selectedEncoders: Object[], removeEncoder: Function, clearViewer: Function, user: Object, setAlert: Function}
+    {selectedEncoders: Object[], removeEncoder: Function, clearViewer: Function, user: UserProps, setAlert: Function}
     ) {
 
     const [machines, setMachines] = useState([]);
@@ -78,7 +85,7 @@ export default function Viewer(
                     }) : null
                 }
             </Box>
-            <IssueForm open={openIssue} encoder={issueData} close={handleCloseIssue} setAlert={setAlert} />
+            <IssueForm open={openIssue} encoder={issueData} close={handleCloseIssue} user={user} setAlert={setAlert} />
         </Box>
     )
 }

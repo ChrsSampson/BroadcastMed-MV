@@ -12,6 +12,7 @@ import ViewerSidebar from "@/components/ViewerSidebar";
 
 interface Props {
     user: {
+        _id: string,
         email: string,
         displayName: string
     },
