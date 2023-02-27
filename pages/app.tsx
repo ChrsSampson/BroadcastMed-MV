@@ -62,16 +62,21 @@ export default function App(props: Props) {
     const [radius, setRadius] = useState<string[]>([])
     const [desktops, setDesktops] = useState<string[]>([])
     const [enclosures, setEnclousures] = useState<string[]>([])
-    const [openDrawer, setOpenDrawer] = useState<boolean>(false)
+    const [showDrawer, setShowDrawer] = useState<boolean>(false)
     const [selectedEncoders, setSelectedEncoders] = useState<Array<Encoder> >([])
     const [error, setError] = useState<string>('')
+    const [message, setMessage] = useState<string>('')
 
     useEffect(() => {
         getEncoders()
     }, [])
 
-    function toggleDrawer() {
-        setOpenDrawer(!openDrawer)
+    function closeDrawer() {
+        setShowDrawer(false)
+    }
+
+    function openDrawer() {
+        setShowDrawer(true)
     }
 
     function addEncoder (data: Encoder) {
@@ -84,6 +89,10 @@ export default function App(props: Props) {
 
     function clearViewer () {
         setSelectedEncoders([])
+    }
+
+    function setAlert(message: string) {
+        setMessage(message)
     }
 
     async function getEncoders () {
@@ -112,20 +121,32 @@ export default function App(props: Props) {
         </Head>
         <Box
             sx={{
-                color: 'black'
+                color: 'black',
+                backgroundImage: 'url(/Wave.svg)',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                minHeight: '100vh',
             }}
         >
-            <NavBar user={props.user} openDrawer={toggleDrawer} />
+            <NavBar user={props.user} openDrawer={openDrawer} />
             <Drawer
                 anchor="left"
-                open={openDrawer}
+                open={showDrawer}
             >
-                <ViewerSidebar toggleDrawer={toggleDrawer} addEncoder={addEncoder} laptops={laptops} radius={radius} desktops={desktops} enclosures={enclosures} />
+                <ViewerSidebar toggleDrawer={closeDrawer} addEncoder={addEncoder} laptops={laptops} radius={radius} desktops={desktops} enclosures={enclosures} />
             </Drawer>
-            <Viewer selectedEncoders={selectedEncoders} removeEncoder={removeEncoder} clearViewer={clearViewer} />
+            <Viewer selectedEncoders={selectedEncoders} removeEncoder={removeEncoder} clearViewer={clearViewer} user={props.user} setAlert={setAlert} />
+            {/* error notification */}
             <Snackbar open={error ? true : false} autoHideDuration={6000} message={error} >
                 <Alert severity="error" variant="filled" sx={{ width: '100%' }} >
                     {error}
+                </Alert>
+            </Snackbar>
+            {/* message / alert notification */}
+            <Snackbar open={message ? true : false} autoHideDuration={6000} message={message} onMouseEnter={() => setMessage('')} >
+                <Alert severity="success" variant="filled" sx={{ width: '100%' }} >
+                    {message}
                 </Alert>
             </Snackbar>
         </Box>

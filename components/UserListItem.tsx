@@ -2,7 +2,7 @@
 import {Box, Button, Typography} from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
 
-export default function ({user, onClick}: {user: any, onClick: Function}) {
+export default function ({user, onClick, index}: {user: any, onClick: Function, index: number}) {
 
     const date = (date: string) => {
         const d = new Date(date);
@@ -22,6 +22,7 @@ export default function ({user, onClick}: {user: any, onClick: Function}) {
                 borderRadius: '1em',
                 marginBottom: '.5em'
             }}
+            key={index}
         >
             <Typography style={{color: 'black'}} variant="h5" component="h1">
                 {user.displayName ? user.displayName : user.email}

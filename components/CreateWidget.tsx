@@ -1,27 +1,29 @@
 import {Box, Tabs, Tab} from '@mui/material'
 import {useState} from 'react'
 import CreateForm from '@/components/CreateForm'
-import { Typography } from "@mui/material";
+import { Typography, Paper } from "@mui/material";
 
-export default function () {
-    const [tab, setTab] = useState<Number>(0);
+export default function (setAlert: any) {
+    const [tab, setTab] = useState<number>(0);
 
-    function handleChange (e: React.SyntheticEvent, value: Number) {
+    function handleChange (e: React.SyntheticEvent, value: number) {
         setTab(value);
     }
 
     return (
-        <Box sx={{
-            border: '1px solid black',
-            borderRadius: '1rem',
-            padding: '1rem',
-            minWidth: '30rem',
-            maxWidth: '60rem',
-            maxHeight: '34.5rem',
-            minHeight: 'auto'
-        }}>
-        <Typography variant="h4" component="h1" sx={{paddingBottom: '1em', color: 'black'}}>Create</Typography>
-        <Box
+        <Paper
+            sx={{
+                borderRadius: '1rem',
+                padding: '1rem',
+                minWidth: '30rem',
+                maxWidth: '60rem',
+                maxHeight: '34.5rem',
+                minHeight: 'auto'
+            }}
+            elevation={3}
+        >
+            <Typography variant="h4" component="h1" sx={{paddingBottom: '1em', color: 'black'}}>Create</Typography>
+            <Box
                 sx={{
                     paddingBottom: '1em'
                 }}
@@ -36,8 +38,8 @@ export default function () {
                 </Tabs>
             </Box>
             <Box>
-                <CreateForm mode={tab} />
+                <CreateForm mode={tab} setAlert={setAlert} />
             </Box>
-        </Box>
+        </Paper>
     )
 }

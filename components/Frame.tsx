@@ -1,6 +1,6 @@
 // frame to display ping plotter
 
-import {Box, Button, TextField, Typography} from "@mui/material";
+import {Box, Button, TextField, Typography, Paper} from "@mui/material";
 import {useState} from "react";
 
 interface Encoder{
@@ -10,19 +10,19 @@ interface Encoder{
     _id: string
 }
 
-export default function ({encoder, removeEncoder} : {encoder: Encoder, removeEncoder: Function}) {
+export default function ({encoder, removeEncoder, handleOpenIssue} : {encoder: Encoder, removeEncoder: Function, handleOpenIssue: Function}) {
 
     const [collapse, setCollapse] = useState<boolean>(false)
 
     return (
-        <Box
+        <Paper
             sx={{
-                border: '1px solid lightgrey',
-                borderRadius: '5px',
+                borderRadius: '.5rem',
                 margin: '.5rem',
                 height: '35em',
                 overflow: 'hidden'
             }}
+            elevation={3}
             onMouseLeave={() => setCollapse(false)}
             onMouseEnter={() => setCollapse(true)}
         >
@@ -36,7 +36,13 @@ export default function ({encoder, removeEncoder} : {encoder: Encoder, removeEnc
                     backgroundColor: '#0B86DB'
                 }}>
                     <Typography color="white" variant="h6">{encoder.tag} {encoder.name}</Typography>
-                    <Button color="error" variant="contained" onClick={() => removeEncoder(encoder._id)}>Remove</Button>
+                    <Box sx={{
+                        display: 'flex',
+                        gap: '.5rem'
+                    }}>
+                        <Button color="warning" variant="contained" onClick={() => handleOpenIssue(encoder)}>Report Issue</Button>
+                        <Button color="error" variant="contained" onClick={() => removeEncoder(encoder._id)}>Remove</Button>
+                    </Box>
                 </Box>
             :null
             }
@@ -52,6 +58,6 @@ export default function ({encoder, removeEncoder} : {encoder: Encoder, removeEnc
             >
                 <p>Your browser does not support iframes.</p>
             </iframe>
-        </Box>
+        </Paper>
     )
 }
