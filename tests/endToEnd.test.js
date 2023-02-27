@@ -10,7 +10,45 @@ dotenv.config({path: './.env.development.local'});
 const seeder = require('../util/seeder');
 const User = require('../models/User');
 const Machine = require('../models/Machine');
-const req = require('express/lib/request');
+const Issue = require('../models/Issue');
+
+async function clearDB() {
+    await User.deleteMany({});
+    await Machine.deleteMany({});
+    await Issue.deleteMany({});
+}
+
+async function obtainSession() {
+    try{
+        const res = await request(app)
+            .post('/api/auth/login')
+            .send({
+                username: 'admin',
+                password: '1'
+            })
+            .expect(200)
+
+        return res.body.data.session;
+    } catch (err) {
+        if(err) throw err
+    }
+}
+
+async function obtainUserSession() {
+    try{
+        const res = await request(app)
+            .post('/api/auth/login')
+            .send({
+                username: 'John.Doe@placeholder.com',
+                password: '123456'
+            })
+            .expect(200)
+
+        return res.body.data.session;
+    } catch(err) {
+        if (err) throw err
+    }
+}
 
 describe('User API', () => {
     let createdUserId = null
@@ -31,34 +69,21 @@ describe('User API', () => {
             });
     });
 
-    beforeEach((done) => {
-        // login to get session with seed user
-        request(app)
-            .post('/api/auth/login')
-            .send({
-                username: 'admin',
-                password: '1'
-            })
-            .expect('Content-Type', /json/)
-            .expect(res => {
-                session = res.body.data.session;
-            })
-            .end((err, res) => {
-                if(err) throw err;
-                done(err);
-            });
+    beforeEach( async () => {
+        try{
+            session = await obtainSession();
+        } catch(err) {
+            if(err) throw err;
+        }
     });
 
     // clean up after tests
-    after((done) => {
-        User.deleteMany({}, (err) => {
+    after(async () => {
+        try{
+            await clearDB();
+        } catch(err) {
             if(err) throw err;
-            done();
-        });
-        Machine.deleteMany({}, (err) => {
-            if(err) throw err;
-            done();
-        })
+        }
     });
 
     it('Should fail to create a user with missing fields', (done) => {
@@ -424,7 +449,7 @@ describe('Auth API', () => {
 
 });
 
-describe.only('Password Reset', () => {
+describe('Password Reset', () => {
 
     // these two fields are required to reset a password
     // user token is only availible to the user through the reset email
@@ -573,4 +598,153 @@ describe.only('Password Reset', () => {
             })
     });
 
-})
+});
+
+describe('Issue API (Admin Privileges)', () => {
+    let session = null
+    let ids = null
+
+    before((done) => {
+        seeder()
+            .then((data) => {
+                ids = data;
+                done();
+            })
+            .catch(err => {
+                if (err) throw err
+                done(err);
+            });
+    });
+
+    before(async () => {
+        session = await obtainSession();
+    });
+
+    after(async () => {
+        try{
+            await clearDB();
+        } catch(err) {
+            if(err) throw err;
+        }
+    });
+
+    it('Should have seed issues', async () => {
+        const result = await Issue.find({})
+        expect(result.length).to.equal(3);
+    })
+
+    it('Should be able to create an issue', async () => {
+        const result = await request(app)
+                                .post('/api/issues')
+                                .set('Cookie', [`session=${session}`])
+                                .send({
+                                    description: 'This is a test issue',
+                                    issue: 'Other',
+                                    machine: ids.machines[0],
+                                    user: ids.users[0]
+                                })
+        expect(result.body.status).to.equal(200);
+    });
+
+    it('Should be able to get all issues', async () => {
+        const result = await request(app)
+                                .get('/api/issues')
+                                .set('Cookie', [`session=${session}`])
+        expect(result.body.status).to.equal(200);
+        expect(result.body.data.length).to.equal(4);
+    });
+
+    it('Should be able to all issues made by a user', async () => {
+        const result = await request(app)
+                                .get(`/api/issues/user/${ids.users[0]}`)
+                                .set('Cookie', [`session=${session}`])
+        expect(result.body.status).to.equal(200);
+        expect(result.body.data.length).to.equal(4);
+    });
+
+    it('Should be able to update an issue', async () => {
+        const result = await request(app)
+                                .put(`/api/issues/${ids.issues[0]}`)
+                                .set('Cookie', [`session=${session}`])
+                                .send({
+                                    status: 'Closed'
+                                })
+        expect(result.body.status).to.equal(200);
+        expect(result.body.data.status).to.equal('Closed');             
+    }) 
+
+    it('Should be able to delete an issue', async () => {
+        const result = await request(app)
+                                .delete(`/api/issues/${ids.issues[0]}`)
+                                .set('Cookie', [`session=${session}`])
+        expect(result.body.status).to.equal(200);
+        expect(result.body.data).to.equal('Issue deleted');
+    }) 
+
+});
+
+describe.only('Issue API (User Privileges)', () => {
+    let session = null
+    let ids = null
+
+    before(async () => {
+        try{
+            ids = await seeder();
+        } catch(err) {
+            if(err) throw err;
+        }
+    })
+
+    before(async () => {
+        try{
+            session = await obtainUserSession();
+        } catch(err) {
+            if(err) throw err;
+        }
+    })
+
+    after(async () => {
+        try{
+            await clearDB();
+        } catch(err) {
+            if(err) throw err;
+        }
+    });
+
+    it('Should not be able to get all issues', async () => {
+        const result = await request(app)
+                                .get('/api/issues')
+                                .set('Cookie', [`session=${session}`])
+        expect(result.body.status).to.equal(403);
+        expect(result.body.message).to.equal('Error: Forbidden');
+    });
+
+    it('Should be able to get all issues created by them', async () => {
+        const result = await request(app)
+                                .get(`/api/issues/user/${ids.users[0]}`)
+                                .set('Cookie', [`session=${session}`])
+        expect(result.body.status).to.equal(200);
+        expect(result.body.data.length).to.equal(3);
+    });
+
+    it('Should not be able to delete an issue made by another user', async () => {
+        const result = await request(app)
+                                .delete(`/api/issues/${ids.issues[1]}`)
+                                .set('Cookie', [`session=${session}`])
+        expect(result.body.status).to.equal(403);
+        expect(result.body.message).to.equal('Error: Forbidden');
+    });
+
+    it('Should be able to create an issue', async () => {
+        const result = await request(app)
+                                .post('/api/issues')
+                                .set('Cookie', [`session=${session}`])
+                                .send({
+                                    description: 'This is a test issue',
+                                    issue: 'Other',
+                                    machine: ids.machines[0],
+                                    user: ids.users[0]
+                                })
+        expect(result.body.status).to.equal(200);
+    });
+});
