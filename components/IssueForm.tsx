@@ -22,7 +22,7 @@ interface EncoderProps {
 }
 
 // open and close control the modal state
-export default function IssueForm({open, close, encoder, setAlert}: {open: boolean, close: Function, encoder: EncoderProps, user: UserProps, setAlert: Function}){
+export default function IssueForm({open, close, encoder, user, setAlert}: {open: boolean, close: Function, encoder: EncoderProps, user: UserProps, setAlert: Function}){
     
     const [issue, setIssue] = useState<string>('')
     const [description, setDescription] = useState<string>('')

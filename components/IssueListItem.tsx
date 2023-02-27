@@ -9,8 +9,17 @@ interface Issue {
     issue: string,
     description: string,
     status: string,
-    user: object,
-    machine: object,
+    user: {
+        _id: string,
+        email: string,
+        displayName: string
+    },
+    machine: {
+        _id: string,
+        name: string,
+        tag: string
+        link: string
+    },
     dateCreated: string,
     lastUpdated: string
 }
